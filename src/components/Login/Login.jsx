@@ -43,10 +43,6 @@ function Login(props) {
                         fullWidth
                         sx={{ mb: 1 }}
                     ></TextField>
-                    {/* <Box sx={{ mt: 1, r: , position: 'relative', display: "flex", alignItems: "center" }}>
-                        <Checkbox />
-                        Remember me
-                    </Box> */}
 
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
