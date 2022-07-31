@@ -22,24 +22,29 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import LanguageIcon from '@mui/icons-material/Language';
 import AppsIcon from '@mui/icons-material/Apps';
 import ArtTrackIcon from '@mui/icons-material/ArtTrack';
+import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 
 Header.propTypes = {
-
+    onLogout: PropTypes.func
 };
 
-function Header(props) {
+Header.default = {
+    onLogout: null
+};
+
+function Header({ onLogout }) {
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const [state, setState] = useState(false);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const [state, setState] = useState(false);
 
     const toggleDrawer = (open) => (event) => {
         if (
@@ -66,11 +71,14 @@ function Header(props) {
                 backgroundColor: theme.palette.action.hover,
                 borderRadius: '12px'
             }}>
-                <Avatar sx={{
-                    width: '36px',
-                    height: '36px'
-                }}>
-                    <AccountCircleIcon />
+                <Avatar
+                    sx={{
+                        width: '36px',
+                        height: '36px'
+                    }}
+                    alt='profile-image'
+                    src='././././images/profile-image.jpg'
+                >
                 </Avatar>
                 <Typography>Nguyễn Trung</Typography>
             </Toolbar>
@@ -111,6 +119,10 @@ function Header(props) {
             </List>
         </Box >
     );
+
+    const handleLogout = () => {
+        if (onLogout) onLogout();
+    };
     return (
         <div>
             <AppBar>
@@ -128,7 +140,11 @@ function Header(props) {
                     </SwipeableDrawer>
 
                     <IconButton size="large" color="inherit" onClick={handleClick}>
-                        <AccountCircleIcon />
+                        <Avatar
+                            alt='image'
+                            sx={{ width: '30px', height: '30px' }}
+                            src='././././images/profile-image.jpg'
+                        />
                     </IconButton>
                     <Menu
                         id="basic-menu"
@@ -141,7 +157,7 @@ function Header(props) {
                         sx={{ position: 'absolute', top: -5 }}
                     >
                         <MenuItem onClick={handleClose}>Thông tin tài khoản</MenuItem>
-                        <MenuItem onClick={handleClose}>Đăng xuất</MenuItem>
+                        <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>

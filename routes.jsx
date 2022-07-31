@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import Login from './src/features/Auth/components/Login/Login'
 import Register from './src/features/Auth/components/Register/Register'
@@ -6,13 +6,17 @@ import NotFound from './src/components/NotFound/NotFound'
 import Product from './src/features/Product/components/Product/Product';
 import User from './src/features/User/components/User/User';
 import Dashboard from './src/layouts/Dashboard/Dashboard';
+import { STORAGE_CONST } from './src/constants/common';
 Router.propTypes = {
 
 };
 
 function Router(props) {
+    const user = JSON.parse(localStorage.getItem(STORAGE_CONST.USER));
+    const isLogin = !!user;
+
     return useRoutes([
-        { path: "/", element: <Navigate to="/dashboard" /> },
+        { path: "/", element: isLogin ? <Navigate to="/dashboard" /> : <Navigate to="/login" /> },
         { path: "/login", element: <Login /> },
         { path: "/register", element: <Register /> },
         { path: "/404", element: <NotFound /> },
