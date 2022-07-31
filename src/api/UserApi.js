@@ -8,7 +8,7 @@ const userApi = {
     register(data) {
         const url = '/users/register';
         return axiosClient.post(url, data);
-    }
+    },
 };
 
 export default userApi;

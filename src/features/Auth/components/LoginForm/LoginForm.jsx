@@ -16,14 +16,18 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
 
 LoginForm.propTypes = {
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    onSnackbar: PropTypes.func
 };
 
 LoginForm.defaultValues = {
-    onSubmit: null
+    onSubmit: null,
+    onSnackbar: null
 };
 
 function LoginForm({ onSubmit }) {
@@ -31,7 +35,7 @@ function LoginForm({ onSubmit }) {
 
     const schema = yup.object().shape({
         username: yup.string().required("Vui lòng điền tên đăng nhập"),
-        password: yup.string().required("Vui lòng điền mật khẩu").min(6, "Mật khẩu tối thiểu 6 kí tự"),
+        password: yup.string().required("Vui lòng điền mật khẩu"),
         rememberMe: yup.bool()
     });
 
@@ -45,11 +49,10 @@ function LoginForm({ onSubmit }) {
     });
 
     const { register, handleSubmit, formState } = form;
-    const { errors } = formState;
-    // console.log(errors, touchedFields);
+    const { errors, isSubmitting } = formState;
 
-    const handleSubmitForm = (values) => {
-        if (onSubmit) onSubmit(values);
+    const handleSubmitForm = async (values) => {
+        if (onSubmit) await onSubmit(values);
     };
 
     const toggleShowPassword = () => {
@@ -57,7 +60,7 @@ function LoginForm({ onSubmit }) {
     }
 
     return (
-        <Container component="main" maxWidth="xs">
+        < Container component="main" maxWidth="xs" >
             <CssBaseline />
             <Box sx={{
                 display: 'flex',
@@ -132,6 +135,12 @@ function LoginForm({ onSubmit }) {
                     &nbsp;2022.
                 </Typography>
             </Box>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={isSubmitting}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </Container >
     );
 }
