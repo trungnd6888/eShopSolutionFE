@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Avatar, Box, Container, CssBaseline, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Container, CssBaseline, Typography } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -17,45 +17,36 @@ import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import LockResetIcon from '@mui/icons-material/LockReset';
 import * as yup from 'yup';
 
-RegisterForm.propTypes = {
+ResetPasswordForm.propTypes = {
     onSubmit: PropTypes.func,
     onSnackbar: PropTypes.func
 };
 
-RegisterForm.defaultValues = {
+ResetPasswordForm.defaultValues = {
     onSubmit: null,
     onSnackbar: null
 };
 
-function RegisterForm({ onSubmit }) {
-    const navigate = useNavigate();
+function ResetPasswordForm({ onSubmit }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const schema = yup.object().shape({
-        fullName: yup.string().required("Vui lòng điền họ tên"),
-        email: yup.string().required('Vui lòng điền email').email("Vui lòng điền đúng định dạng email"),
-        username: yup.string().required("Vui lòng điền tên đăng nhập"),
-        password: yup.string().required("Vui lòng điền mật khẩu").matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
-            'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
+
+        password: yup.string().required("Vui lòng điền mật khẩu"),
         confirmPassword: yup
             .string()
-            .required("Vui lòng điền xác nhận mật khẩu")
+            .required('Vui lòng điền xác nhận mật khẩu')
             .oneOf([yup.ref('password')], 'Mật khẩu xác nhận chưa khớp'),
-        rememberMe: yup.bool(),
     });
 
     const form = useForm({
         defaultValues: {
-            fullName: '',
-            username: '',
             password: '',
             confirmPassword: '',
-            phoneNumber: '',
-            email: '',
         },
         resolver: yupResolver(schema)
     });
@@ -73,10 +64,6 @@ function RegisterForm({ onSubmit }) {
         setShowConfirmPassword(x => !x);
     }
 
-    const handleNavigate = () => {
-        navigate('/login');
-    }
-
     return (
         < Container component="main" maxWidth="xs" >
             <CssBaseline />
@@ -87,45 +74,17 @@ function RegisterForm({ onSubmit }) {
                 mt: 9
             }} >
                 <Avatar sx={{ bgcolor: "primary.main" }}>
-                    <AppRegistrationIcon />
+                    <LockResetIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5" sx={{ mt: 1 }} >
-                    Đăng ký
+                    Quên mật khẩu
+                </Typography>
+                <Typography component="h1" variant="caption" sx={{ mt: 1 }} >
+                    Vui lòng điền mật khẩu mới
                 </Typography>
                 <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)}>
-                    <TextField
-                        {...register("fullName")}
-                        variant="outlined"
-                        label="Họ tên"
-                        fullWidth
-                        autoFocus
-                        sx={{ mb: 3 }}
-                        error={!!errors.fullName}
-                        helperText={errors?.fullName?.message}
-                    ></TextField>
-
-                    <TextField
-                        {...register("username")}
-                        variant="outlined"
-                        label="Tên đăng nhập"
-                        fullWidth
-                        sx={{ mb: 3 }}
-                        error={!!errors.username}
-                        helperText={errors?.username?.message}
-                    ></TextField>
-
-                    <TextField
-                        {...register("email")}
-                        variant="outlined"
-                        label="Email"
-                        fullWidth
-                        sx={{ mb: 3 }}
-                        error={!!errors.email}
-                        helperText={errors?.email?.message}
-                    ></TextField>
-
                     <FormControl
-                        sx={{ mb: 3 }}
+                        sx={{ mb: 1 }}
                         variant="outlined"
                         fullWidth
                         error={!!errors.password}
@@ -151,12 +110,12 @@ function RegisterForm({ onSubmit }) {
                         <FormHelperText id="component-error-text">{errors?.password?.message}</FormHelperText>
                     </FormControl>
                     <FormControl
-                        sx={{ mb: 3 }}
+                        sx={{ mb: 1 }}
                         variant="outlined"
                         fullWidth
-                        error={!!errors.confirmPassword}
+                        error={!!errors.password}
                     >
-                        <InputLabel htmlFor="outlined-adornment-confirm-password">Nhập lại mật khẩu</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-password">Nhập lại mật khẩu</InputLabel>
                         <OutlinedInput
                             {...register("confirmPassword")}
                             id="outlined-adornment-confirm-password"
@@ -176,25 +135,7 @@ function RegisterForm({ onSubmit }) {
                         />
                         <FormHelperText id="component-error-text">{errors?.confirmPassword?.message}</FormHelperText>
                     </FormControl>
-
-                    <TextField
-                        {...register("phoneNumber")}
-                        variant="outlined"
-                        label="Điện thoại"
-                        fullWidth
-                        sx={{ mb: 1 }}
-                        error={!!errors.phoneNumber}
-                        helperText={errors?.phoneNumber?.message}
-                    ></TextField>
-
-                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>Đăng ký</Button>
-                    <Box sx={{
-                        mt: 2.4,
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Bạn đã có tài khoản? Đăng nhập</Link>
-                    </Box>
+                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>Cập nhật mật khẩu</Button>
                 </Box>
             </Box>
             <Box textAlign="center" sx={{ mt: 8 }}>
@@ -214,4 +155,4 @@ function RegisterForm({ onSubmit }) {
     );
 }
 
-export default RegisterForm;
+export default ResetPasswordForm;
