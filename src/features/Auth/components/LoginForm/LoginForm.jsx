@@ -19,6 +19,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 LoginForm.propTypes = {
     onSubmit: PropTypes.func,
@@ -31,26 +32,26 @@ LoginForm.defaultValues = {
 };
 
 function LoginForm({ onSubmit }) {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const schema = yup.object().shape({
         username: yup.string().required("Vui lòng điền tên đăng nhập"),
         password: yup.string().required("Vui lòng điền mật khẩu"),
-        rememberMe: yup.bool()
+        // rememberMe: yup.bool()
     });
 
     const form = useForm({
         defaultValues: {
             username: '',
             password: '',
-            rememberMe: false
+            // rememberMe: false
         },
         resolver: yupResolver(schema)
     });
 
     const { register, handleSubmit, formState } = form;
     const { errors, isSubmitting } = formState;
-
     const handleSubmitForm = async (values) => {
         if (onSubmit) await onSubmit(values);
     };
@@ -58,6 +59,14 @@ function LoginForm({ onSubmit }) {
     const toggleShowPassword = () => {
         setShowPassword(x => !x);
     }
+
+    const handleNavigate = () => {
+        navigate('/register');
+    }
+
+    const handleNavigateForgot = () => {
+        navigate('/forgotpassword');
+    };
 
     return (
         < Container component="main" maxWidth="xs" >
@@ -112,19 +121,19 @@ function LoginForm({ onSubmit }) {
                         />
                         <FormHelperText id="component-error-text">{errors?.password?.message}</FormHelperText>
                     </FormControl>
-
+                    {/* 
                     <FormControlLabel
                         control={<Checkbox {...register("rememberMe")} color="primary" />}
                         label="Lưu thông tin"
-                    />
+                    /> */}
                     <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>Đăng nhập</Button>
                     <Box sx={{
                         mt: 2.4,
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }}>Quên mật khẩu?</Link>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }}>Bạn chưa có tài khoản? Tạo mới</Link>
+                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigateForgot}>Quên mật khẩu?</Link>
+                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Bạn chưa có tài khoản? Tạo mới</Link>
                     </Box>
                 </Box>
             </Box>

@@ -1,7 +1,12 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
+import AppsIcon from '@mui/icons-material/Apps';
+import ArtTrackIcon from '@mui/icons-material/ArtTrack';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
+import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
+import FestivalIcon from '@mui/icons-material/Festival';
+import LanguageIcon from '@mui/icons-material/Language';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { AppBar, Avatar, IconButton, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -12,18 +17,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useTheme } from '@mui/material/styles';
-import CoPresentIcon from '@mui/icons-material/CoPresent';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import FestivalIcon from '@mui/icons-material/Festival';
-import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import LanguageIcon from '@mui/icons-material/Language';
-import AppsIcon from '@mui/icons-material/Apps';
-import ArtTrackIcon from '@mui/icons-material/ArtTrack';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
+import AvartaImage from '../../../images/profile-image.jpg';
 
 Header.propTypes = {
     onLogout: PropTypes.func
@@ -143,7 +141,7 @@ function Header({ onLogout }) {
                         <Avatar
                             alt='image'
                             sx={{ width: '30px', height: '30px' }}
-                            src='././././images/profile-image.jpg'
+                            src={AvartaImage}
                         />
                     </IconButton>
                     <Menu
