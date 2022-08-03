@@ -39,8 +39,11 @@ function RegisterForm({ onSubmit }) {
         fullName: yup.string().required("Vui lòng điền họ tên"),
         email: yup.string().required('Vui lòng điền email').email("Vui lòng điền đúng định dạng email"),
         username: yup.string().required("Vui lòng điền tên đăng nhập"),
-        password: yup.string().required("Vui lòng điền mật khẩu").matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
-            'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
+        password: yup
+            .string()
+            .required("Vui lòng điền mật khẩu")
+            .matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
+                'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
         confirmPassword: yup
             .string()
             .required("Vui lòng điền xác nhận mật khẩu")
