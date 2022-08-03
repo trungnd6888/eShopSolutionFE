@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockResetIcon from '@mui/icons-material/LockReset';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Avatar, Box, Container, CssBaseline, Typography } from '@mui/material';
@@ -16,27 +16,35 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import LockResetIcon from '@mui/icons-material/LockReset';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
+import { useEffect } from 'react';
+import queryString from 'query-string';
 
 ResetPasswordForm.propTypes = {
     onSubmit: PropTypes.func,
-    onSnackbar: PropTypes.func
+    onSnackbar: PropTypes.func,
 };
 
 ResetPasswordForm.defaultValues = {
     onSubmit: null,
-    onSnackbar: null
+    onSnackbar: null,
 };
 
 function ResetPasswordForm({ onSubmit }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const location = useLocation();
+    const params = queryString.parse(location.search);
 
     const schema = yup.object().shape({
-
-        password: yup.string().required("Vui lòng điền mật khẩu"),
+        password: yup
+            .string()
+            .required("Vui lòng điền mật khẩu")
+            .matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
+                'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
         confirmPassword: yup
             .string()
             .required('Vui lòng điền xác nhận mật khẩu')
@@ -54,7 +62,7 @@ function ResetPasswordForm({ onSubmit }) {
     const { register, handleSubmit, formState } = form;
     const { errors, isSubmitting } = formState;
     const handleSubmitForm = async (values) => {
-        if (onSubmit) await onSubmit(values);
+        if (onSubmit) await onSubmit(values, email, params?.Token);
     };
 
     const toggleShowPassword = () => {
@@ -63,6 +71,11 @@ function ResetPasswordForm({ onSubmit }) {
     const toggleShowConfirmPassword = () => {
         setShowConfirmPassword(x => !x);
     }
+
+    useEffect(() => {
+        console.log('params: ', params.Email);
+        setEmail(params?.Email);
+    }, []);
 
     return (
         < Container component="main" maxWidth="xs" >
@@ -82,9 +95,10 @@ function ResetPasswordForm({ onSubmit }) {
                 <Typography component="h1" variant="caption" sx={{ mt: 1 }} >
                     Vui lòng điền mật khẩu mới
                 </Typography>
-                <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)}>
+                <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)} >
+
                     <FormControl
-                        sx={{ mb: 1 }}
+                        sx={{ mb: 3 }}
                         variant="outlined"
                         fullWidth
                         error={!!errors.password}
@@ -113,9 +127,9 @@ function ResetPasswordForm({ onSubmit }) {
                         sx={{ mb: 1 }}
                         variant="outlined"
                         fullWidth
-                        error={!!errors.password}
+                        error={!!errors.confirmPassword}
                     >
-                        <InputLabel htmlFor="outlined-adornment-password">Nhập lại mật khẩu</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-confirm-password">Nhập lại mật khẩu</InputLabel>
                         <OutlinedInput
                             {...register("confirmPassword")}
                             id="outlined-adornment-confirm-password"
