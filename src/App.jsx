@@ -2,8 +2,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Router from "../routes";
 import './App.css';
 import CustomizedSnackbar from './components/CustomizedSnackbar/CustomizedSnackbar';
+import customTheme from './utils/theme';
 
-const theme = createTheme();
+const theme = customTheme;
 
 function App() {
   return (

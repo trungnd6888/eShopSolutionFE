@@ -16,9 +16,8 @@ function ResetPassword(props) {
         try {
             const data = { ...values, email };
             const config = { params: { token } };
-            console.log('data: ', data);
-            console.log('config: ', config);
             await userApi.resetPassword(data, config);
+
             const actionSnackbar = open({
                 status: true,
                 message: 'Cập nhật mật khẩu thành công',
@@ -27,7 +26,7 @@ function ResetPassword(props) {
             dispatch(actionSnackbar);
 
             console.log('Reset password success');
-            navigate('/login');
+            navigate('/forgotPassword/reset/success');
         } catch (error) {
             const actionSnackbar = open({
                 status: true,

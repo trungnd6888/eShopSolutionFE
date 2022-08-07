@@ -14,13 +14,11 @@ import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import * as yup from 'yup';
-import { useEffect } from 'react';
 import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
+import * as yup from 'yup';
 
 ResetPasswordForm.propTypes = {
     onSubmit: PropTypes.func,
@@ -73,7 +71,6 @@ function ResetPasswordForm({ onSubmit }) {
     }
 
     useEffect(() => {
-        console.log('params: ', params.Email);
         setEmail(params?.Email);
     }, []);
 

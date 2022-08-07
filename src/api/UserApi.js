@@ -14,7 +14,7 @@ const userApi = {
         return axiosClient.post(url, data);
     },
     resetPassword(data, config) {
-        const url = '/users/resetPassword';
+        const url = '/users/forgotPassword/reset';
         return axiosClient.post(url, data, config);
     },
 };
