@@ -28,7 +28,7 @@ function Register(props) {
             });
 
             dispatch(actionSnackbar);
-            navigate('/login');
+            navigate('/register/success');
             console.log('Register is success');
         } catch (error) {
             const actionSnackbar = open({

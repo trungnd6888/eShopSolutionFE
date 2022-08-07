@@ -1,25 +1,22 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Avatar, Box, Container, CssBaseline, TextField, Typography } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import FormHelperText from '@mui/material/FormHelperText';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
 
 LoginForm.propTypes = {
     onSubmit: PropTypes.func,
@@ -32,7 +29,6 @@ LoginForm.defaultValues = {
 };
 
 function LoginForm({ onSubmit }) {
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const schema = yup.object().shape({
@@ -59,14 +55,6 @@ function LoginForm({ onSubmit }) {
     const toggleShowPassword = () => {
         setShowPassword(x => !x);
     }
-
-    const handleNavigate = () => {
-        navigate('/register');
-    }
-
-    const handleNavigateForgot = () => {
-        navigate('/forgotpassword');
-    };
 
     return (
         < Container component="main" maxWidth="xs" >
@@ -132,8 +120,8 @@ function LoginForm({ onSubmit }) {
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigateForgot}>Quên mật khẩu?</Link>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Bạn chưa có tài khoản? Tạo mới</Link>
+                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/forgotpassword'>Quên mật khẩu?</Link>
+                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/register'>Bạn chưa có tài khoản? Tạo mới</Link>
                     </Box>
                 </Box>
             </Box>
