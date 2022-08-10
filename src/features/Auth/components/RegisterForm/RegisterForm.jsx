@@ -16,6 +16,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import * as yup from 'yup';
 
 RegisterForm.propTypes = {
@@ -29,6 +31,7 @@ RegisterForm.defaultValues = {
 };
 
 function RegisterForm({ onSubmit }) {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -36,12 +39,15 @@ function RegisterForm({ onSubmit }) {
         fullName: yup.string().required("Vui lòng điền họ tên"),
         email: yup.string().required('Vui lòng điền email').email("Vui lòng điền đúng định dạng email"),
         username: yup.string().required("Vui lòng điền tên đăng nhập"),
-        password: yup.string().required("Vui lòng điền mật khẩu").matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
-            'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
+        password: yup
+            .string()
+            .required("Vui lòng điền mật khẩu")
+            .matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
+                'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
         confirmPassword: yup
             .string()
-            .required("Vui lòng nhập lại mật khẩu")
-            .oneOf([yup.ref('password')], 'Mật khẩu nhập lại chưa khớp'),
+            .required("Vui lòng điền xác nhận mật khẩu")
+            .oneOf([yup.ref('password')], 'Mật khẩu xác nhận chưa khớp'),
         rememberMe: yup.bool(),
     });
 
@@ -59,7 +65,6 @@ function RegisterForm({ onSubmit }) {
 
     const { register, handleSubmit, formState } = form;
     const { errors, isSubmitting } = formState;
-
     const handleSubmitForm = async (values) => {
         if (onSubmit) await onSubmit(values);
     };
@@ -67,9 +72,12 @@ function RegisterForm({ onSubmit }) {
     const toggleShowPassword = () => {
         setShowPassword(x => !x);
     }
-
     const toggleShowConfirmPassword = () => {
         setShowConfirmPassword(x => !x);
+    }
+
+    const handleNavigate = () => {
+        navigate('/login');
     }
 
     return (
@@ -82,10 +90,10 @@ function RegisterForm({ onSubmit }) {
                 mt: 9
             }} >
                 <Avatar sx={{ bgcolor: "primary.main" }}>
-                    <LockOutlinedIcon />
+                    <AppRegistrationIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5" sx={{ mt: 1 }} >
-                    Đăng nhập
+                    Đăng ký
                 </Typography>
                 <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)}>
                     <TextField
@@ -188,7 +196,7 @@ function RegisterForm({ onSubmit }) {
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }}>Bạn đã có tài khoản? Đăng nhập</Link>
+                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Bạn đã có tài khoản? Đăng nhập</Link>
                     </Box>
                 </Box>
             </Box>

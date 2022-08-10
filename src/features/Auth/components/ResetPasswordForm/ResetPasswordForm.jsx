@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockResetIcon from '@mui/icons-material/LockReset';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Avatar, Box, Container, CssBaseline, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Container, CssBaseline, Typography } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -14,34 +14,45 @@ import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
-import React, { useState } from 'react';
+import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 import * as yup from 'yup';
 
-LoginForm.propTypes = {
+ResetPasswordForm.propTypes = {
     onSubmit: PropTypes.func,
-    onSnackbar: PropTypes.func
+    onSnackbar: PropTypes.func,
 };
 
-LoginForm.defaultValues = {
+ResetPasswordForm.defaultValues = {
     onSubmit: null,
-    onSnackbar: null
+    onSnackbar: null,
 };
 
-function LoginForm({ onSubmit }) {
+function ResetPasswordForm({ onSubmit }) {
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const location = useLocation();
+    const params = queryString.parse(location.search);
 
     const schema = yup.object().shape({
-        username: yup.string().required("Vui lòng điền tên đăng nhập"),
-        password: yup.string().required("Vui lòng điền mật khẩu"),
-        // rememberMe: yup.bool()
+        password: yup
+            .string()
+            .required("Vui lòng điền mật khẩu")
+            .matches('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[a-z]).{6,}$', 'Mật khẩu phải ít nhất 6 ký tự (bao gồm ' +
+                'ít nhất một số, một chữ hoa, một chữ thường và một ký tự đặc biệt)'),
+        confirmPassword: yup
+            .string()
+            .required('Vui lòng điền xác nhận mật khẩu')
+            .oneOf([yup.ref('password')], 'Mật khẩu xác nhận chưa khớp'),
     });
 
     const form = useForm({
         defaultValues: {
-            username: '',
             password: '',
-            // rememberMe: false
+            confirmPassword: '',
         },
         resolver: yupResolver(schema)
     });
@@ -49,12 +60,19 @@ function LoginForm({ onSubmit }) {
     const { register, handleSubmit, formState } = form;
     const { errors, isSubmitting } = formState;
     const handleSubmitForm = async (values) => {
-        if (onSubmit) await onSubmit(values);
+        if (onSubmit) await onSubmit(values, email, params?.Token);
     };
 
     const toggleShowPassword = () => {
         setShowPassword(x => !x);
     }
+    const toggleShowConfirmPassword = () => {
+        setShowConfirmPassword(x => !x);
+    }
+
+    useEffect(() => {
+        setEmail(params?.Email);
+    }, []);
 
     return (
         < Container component="main" maxWidth="xs" >
@@ -66,25 +84,18 @@ function LoginForm({ onSubmit }) {
                 mt: 9
             }} >
                 <Avatar sx={{ bgcolor: "primary.main" }}>
-                    <LockOutlinedIcon />
+                    <LockResetIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5" sx={{ mt: 1 }} >
-                    Đăng nhập
+                    Quên mật khẩu
                 </Typography>
-                <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)}>
-                    <TextField
-                        {...register("username")}
-                        variant="outlined"
-                        label="Tên đăng nhập"
-                        fullWidth
-                        autoFocus
-                        sx={{ mb: 3 }}
-                        error={!!errors.username}
-                        helperText={errors?.username?.message}
-                    ></TextField>
+                <Typography component="h1" variant="caption" sx={{ mt: 1 }} >
+                    Vui lòng điền mật khẩu mới
+                </Typography>
+                <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)} >
 
                     <FormControl
-                        sx={{ mb: 1 }}
+                        sx={{ mb: 3 }}
                         variant="outlined"
                         fullWidth
                         error={!!errors.password}
@@ -109,20 +120,33 @@ function LoginForm({ onSubmit }) {
                         />
                         <FormHelperText id="component-error-text">{errors?.password?.message}</FormHelperText>
                     </FormControl>
-                    {/* 
-                    <FormControlLabel
-                        control={<Checkbox {...register("rememberMe")} color="primary" />}
-                        label="Lưu thông tin"
-                    /> */}
-                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>Đăng nhập</Button>
-                    <Box sx={{
-                        mt: 2.4,
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/forgotpassword'>Quên mật khẩu?</Link>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/register'>Bạn chưa có tài khoản? Tạo mới</Link>
-                    </Box>
+                    <FormControl
+                        sx={{ mb: 1 }}
+                        variant="outlined"
+                        fullWidth
+                        error={!!errors.confirmPassword}
+                    >
+                        <InputLabel htmlFor="outlined-adornment-confirm-password">Nhập lại mật khẩu</InputLabel>
+                        <OutlinedInput
+                            {...register("confirmPassword")}
+                            id="outlined-adornment-confirm-password"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle confirm password visibility"
+                                        onClick={toggleShowConfirmPassword}
+                                        edge="end"
+                                    >
+                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Nhập lại mật khẩu"
+                        />
+                        <FormHelperText id="component-error-text">{errors?.confirmPassword?.message}</FormHelperText>
+                    </FormControl>
+                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>Cập nhật mật khẩu</Button>
                 </Box>
             </Box>
             <Box textAlign="center" sx={{ mt: 8 }}>
@@ -142,4 +166,4 @@ function LoginForm({ onSubmit }) {
     );
 }
 
-export default LoginForm;
+export default ResetPasswordForm;
