@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Avatar, Box, Container, CssBaseline, TextField, Typography } from '@mui/material';
@@ -16,8 +16,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 
 RegisterForm.propTypes = {
@@ -31,7 +30,6 @@ RegisterForm.defaultValues = {
 };
 
 function RegisterForm({ onSubmit }) {
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -74,10 +72,6 @@ function RegisterForm({ onSubmit }) {
     }
     const toggleShowConfirmPassword = () => {
         setShowConfirmPassword(x => !x);
-    }
-
-    const handleNavigate = () => {
-        navigate('/login');
     }
 
     return (
@@ -196,7 +190,7 @@ function RegisterForm({ onSubmit }) {
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Bạn đã có tài khoản? Đăng nhập</Link>
+                        <Link component={NavLink} to='/login' variant="body2">Bạn đã có tài khoản? Đăng nhập</Link>
                     </Box>
                 </Box>
             </Box>

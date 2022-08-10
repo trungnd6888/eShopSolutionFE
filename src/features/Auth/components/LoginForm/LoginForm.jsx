@@ -11,11 +11,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { NavLink } from 'react-router-dom';
+import { Link } from '@mui/material';
 import * as yup from 'yup';
 
 LoginForm.propTypes = {
@@ -120,15 +121,15 @@ function LoginForm({ onSubmit }) {
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/forgotpassword'>Quên mật khẩu?</Link>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} href='/register'>Bạn chưa có tài khoản? Tạo mới</Link>
+                        <Link variant='body2' component={NavLink} to="/forgotpassword">Quên mật khẩu?</Link>
+                        <Link variant='body2' component={NavLink} to="/register">Bạn chưa có tài khoản? Tạo mới</Link>
                     </Box>
                 </Box>
             </Box>
             <Box textAlign="center" sx={{ mt: 8 }}>
                 <Typography variant="body2" color="text.secondary">
                     Copyright ©&nbsp;
-                    <Link color="inherit" sx={{ cursor: 'pointer' }}>E Shop</Link>
+                    <Link to='#' color="inherit" >E Shop</Link>
                     &nbsp;2022.
                 </Typography>
             </Box>

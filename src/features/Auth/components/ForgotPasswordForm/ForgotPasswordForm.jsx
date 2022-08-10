@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import LockResetIcon from '@mui/icons-material/LockReset';
 import { Avatar, Box, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
@@ -7,8 +8,7 @@ import Link from '@mui/material/Link';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import LockResetIcon from '@mui/icons-material/LockReset';
+import { NavLink } from 'react-router-dom';
 import * as yup from 'yup';
 
 ForgotPasswordForm.propTypes = {
@@ -22,8 +22,6 @@ ForgotPasswordForm.defaultValues = {
 };
 
 function ForgotPasswordForm({ onSubmit }) {
-    const navigate = useNavigate();
-
     const schema = yup.object().shape({
         email: yup.string().required("Vui lòng điền email").email("Vui lòng điền đúng định dạng email"),
     });
@@ -40,10 +38,6 @@ function ForgotPasswordForm({ onSubmit }) {
     const handleSubmitForm = async (values) => {
         if (onSubmit) await onSubmit(values);
     };
-
-    const handleNavigate = () => {
-        navigate('/login');
-    }
 
     return (
         < Container component="main" maxWidth="xs" >
@@ -80,7 +74,7 @@ function ForgotPasswordForm({ onSubmit }) {
                         display: 'flex',
                         justifyContent: 'space-between'
                     }}>
-                        <Link variant="body2" sx={{ cursor: 'pointer' }} onClick={handleNavigate}>Quay lại đăng nhập</Link>
+                        <Link component={NavLink} to='/login' variant="body2" >Quay lại đăng nhập</Link>
                     </Box>
                 </Box>
             </Box>
