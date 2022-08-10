@@ -8,7 +8,7 @@ import Register from './src/features/Auth/components/Register/Register';
 import RegisterSuccess from './src/features/Auth/components/RegisterSuccess/RegisterSuccess';
 import ResetPassword from './src/features/Auth/components/ResetPassword/ResetPassword';
 import ResetPasswordSuccess from './src/features/Auth/components/ResetPasswordSuccess/ResetPasswordSuccess';
-import Product from './src/features/Product/components/Product/Product';
+import Product from './src/features/Product/pages/Product/Product';
 import User from './src/features/User/components/User/User';
 import Dashboard from './src/features/Dashboard/pages/Dashboard/Dashboard';
 import DashboardLayout from './src/layouts/DashboardLayout/DashboardLayout';
@@ -21,7 +21,7 @@ function Router(props) {
     const isLogin = !!user;
 
     return useRoutes([
-        { path: "/", element: isLogin ? <Navigate to="dashboard" /> : <Navigate to="login" /> },
+        { path: "/", element: isLogin ? <Navigate to="dashboard/dashboard" /> : <Navigate to="login" /> },
         { path: "login", element: <Login /> },
         {
             path: "register", children: [
