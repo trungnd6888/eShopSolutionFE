@@ -1,14 +1,20 @@
 import axios from "axios";
+import { STORAGE_CONST } from "../constants/common";
 
 const axiosClient = axios.create({
     baseURL: 'https://localhost:7095/api',
-    // baseURL: 'http://localhost:8000/api',
+    // baseURL: 'http://192.168.1.5:8000/api',
     header: {
         'Content-Type': 'application/json',
     }
 });
 
 axiosClient.interceptors.request.use(function (config) {
+    //Attach token to request if exits
+    //Refresh token
+    const accessToken = localStorage.getItem(STORAGE_CONST.TOKEN);
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+
     return config;
 }, function (error) {
     return Promise.reject(error);

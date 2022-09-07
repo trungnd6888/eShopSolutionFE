@@ -6,23 +6,31 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
-import AvartaImage from '../../../images/profile-image.jpg';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { STORAGE_IMAGE, STORAGE_USER } from '../../constants/common';
+import { openDrawer } from '../../layouts/drawerSlice';
 
 Header.propTypes = {
-    onDrawerToggle: PropTypes.func,
     onLogout: PropTypes.func,
     drawerWidth: PropTypes.number,
 };
 
 Header.default = {
-    onDrawerToggle: null,
     onLogout: null,
     drawerWidth: 0,
 };
 
-function Header({ onLogout, onDrawerToggle, drawerWidth }) {
+function Header({ onLogout, drawerWidth }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const drawer = useSelector(state => state.drawer);
+    const dispatch = useDispatch();
+
+    const user = useSelector(state => state.user);
+    const name = user.current[STORAGE_USER.NAME];
+    const emailAddress = user.current[STORAGE_USER.EMAIL_ADDRESS];
+    const avatarImageUrl = user.current[STORAGE_USER.AVATAR_IMAGE_URL];
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -37,7 +45,8 @@ function Header({ onLogout, onDrawerToggle, drawerWidth }) {
     };
 
     const handleDrawerToggle = () => {
-        if (onDrawerToggle) onDrawerToggle();
+        const action = openDrawer(!drawer);
+        dispatch(action);
     };
 
     return (
@@ -62,7 +71,7 @@ function Header({ onLogout, onDrawerToggle, drawerWidth }) {
                     <Avatar
                         alt='image'
                         sx={{ width: '30px', height: '30px' }}
-                        src={AvartaImage}
+                        src={avatarImageUrl ? avatarImageUrl : STORAGE_IMAGE.AVATAR_THUMBNAI}
                     />
                 </IconButton>
                 <Menu
@@ -72,22 +81,23 @@ function Header({ onLogout, onDrawerToggle, drawerWidth }) {
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button',
+
                     }}
-                    sx={{ position: 'absolute', top: -5 }}
+                    // sx={{ position: 'absolute', top: -5 }}
+                    sx={{ top: -5 }}
                 >
 
                     <Box sx={{ m: 2, mt: 1 }} >
                         <Typography variant='h6'>
-                            Nguyễn Trung
+                            {name}
                         </Typography>
                         <Typography variant='body2' color='rgb(99, 115, 129)'>
-                            trungk47s5@gmail.com
+                            {emailAddress}
                         </Typography>
                     </Box>
 
-
                     <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
-                    <MenuItem onClick={handleClose}>Trang chủ</MenuItem>
+                    <MenuItem component={NavLink} to="/dashboard/dashboard">Trang chủ</MenuItem>
                     <MenuItem onClick={handleClose}>Thông tin tài khoản</MenuItem>
                     <MenuItem onClick={handleClose}>Cài đặt</MenuItem>
                     <Divider />

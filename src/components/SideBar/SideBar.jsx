@@ -19,18 +19,16 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import ImageProfile from '../../../images/profile-image.jpg';
+import { STORAGE_IMAGE, STORAGE_USER } from '../../constants/common';
+import { openDrawer } from '../../layouts/drawerSlice';
 
 SideBar.propTypes = {
-    mobileOpen: PropTypes.bool,
-    onDrawerToggle: PropTypes.func,
     drawerWidth: PropTypes.number,
 };
 
 SideBar.defaultValues = {
-    mobileOpen: false,
-    onDrawerToggle: null,
     drawerWidth: 0,
 };
 
@@ -38,10 +36,16 @@ const activeStyle = {
     textDecoration: 'underline',
 };
 
-function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
+function SideBar({ drawerWidth }) {
     const theme = useTheme();
+    const drawer = useSelector(state => state.drawer);
+    const dispatch = useDispatch();
 
-    const drawer = (
+    const user = useSelector(state => state.user).current;
+    const fullName = user[STORAGE_USER.FULLNAME];
+    const avatarImageUrl = user[STORAGE_USER.AVATAR_IMAGE_URL];
+
+    const drawerBox = (
         <Box
             sx={{ width: 239 }}
             role="presentation"
@@ -54,14 +58,14 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
             }}>
                 <Avatar
                     alt='profile-image'
-                    src={ImageProfile}
+                    src={avatarImageUrl ? avatarImageUrl : STORAGE_IMAGE.AVATAR_THUMBNAI}
                     sx={{
                         width: 36,
                         height: 36,
                     }}
                 >
                 </Avatar>
-                <Typography>Nguyễn Trung</Typography>
+                <Typography sx={{ textAlign: 'center' }}>{fullName}</Typography>
             </Toolbar>
 
             <List>
@@ -96,12 +100,12 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
                     { name: 'Nhà cung cấp', icon: <FestivalIcon />, url: 'distributor' },
                 ].map((text, index) => (
                     <ListItem
-                        style={({ isActive }) => isActive ? activeStyle : undefined}
-                        component={NavLink}
-                        to={text.url}
-                        key={text.name[0] + index}
                         disablePadding
+                        to={text.url}
+                        component={NavLink}
                         sx={{ color: 'inherit' }}
+                        key={text.name[0] + index}
+                        style={({ isActive }) => isActive ? activeStyle : undefined}
                     >
                         <ListItemButton>
                             <ListItemIcon>{text.icon}</ListItemIcon>
@@ -113,10 +117,17 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
             <Divider />
             <List>
                 {[
-                    { name: 'Đơn hàng', icon: <DeliveryDiningIcon /> },
-                    { name: 'Phân quyền', icon: <ManageAccountsIcon /> },
+                    { name: 'Đơn hàng', icon: <DeliveryDiningIcon />, url: 'order' },
+                    { name: 'Phân quyền', icon: <ManageAccountsIcon />, url: 'role' },
                 ].map((text, index) => (
-                    <ListItem key={text.name[0] + index} disablePadding>
+                    <ListItem
+                        disablePadding
+                        to={text.url}
+                        component={NavLink}
+                        sx={{ color: 'inherit' }}
+                        key={text.name[0] + index}
+                        style={({ isActive }) => isActive ? activeStyle : undefined}
+                    >
                         <ListItemButton>
                             <ListItemIcon> {text.icon} </ListItemIcon>
                             <ListItemText primary={text.name} />
@@ -128,7 +139,8 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
     );
 
     const handleDrawerToggle = () => {
-        if (onDrawerToggle) onDrawerToggle();
+        const action = openDrawer(!drawer);
+        dispatch(action);
     };
 
     return (
@@ -139,7 +151,7 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <Drawer
                 variant="temporary"
-                open={mobileOpen}
+                open={drawer}
                 onClose={handleDrawerToggle}
                 ModalProps={{
                     keepMounted: true, // Better open performance on mobile.
@@ -149,7 +161,7 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
                     '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                 }}
             >
-                {drawer}
+                {drawerBox}
             </Drawer>
             <Drawer
                 variant="permanent"
@@ -159,7 +171,7 @@ function SideBar({ mobileOpen, onDrawerToggle, drawerWidth }) {
                 }}
                 open
             >
-                {drawer}
+                {drawerBox}
             </Drawer>
         </Box>
     );

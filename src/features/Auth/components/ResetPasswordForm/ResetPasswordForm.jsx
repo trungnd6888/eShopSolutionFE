@@ -93,7 +93,6 @@ function ResetPasswordForm({ onSubmit }) {
                     Vui lòng điền mật khẩu mới
                 </Typography>
                 <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(handleSubmitForm)} >
-
                     <FormControl
                         sx={{ mb: 3 }}
                         variant="outlined"

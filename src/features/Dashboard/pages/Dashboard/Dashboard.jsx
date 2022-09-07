@@ -4,11 +4,13 @@ import AppleIcon from '@mui/icons-material/Apple';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { Container, Grid, Typography } from '@mui/material';
 import React from 'react';
-import AppConversionRates from '../../components/AppConversionRates/AppConversionRates';
-import AppWidgetSummary from '../../components/AppWidgetSummary/AppWidgetSummary';
-import AppTimeline from '../../components/AppTimeline/AppTimeline';
-import AppNewsUpdate from '../../components/AppNewsUpdate/AppNewsUpdate';
 import imageNews from '../../../../../images/profile-image.jpg';
+import { STORAGE_USER } from '../../../../constants/common';
+import AppConversionRates from '../../components/AppConversionRates/AppConversionRates';
+import AppNewsUpdate from '../../components/AppNewsUpdate/AppNewsUpdate';
+import AppTimeline from '../../components/AppTimeline/AppTimeline';
+import AppWidgetSummary from '../../components/AppWidgetSummary/AppWidgetSummary';
+import { useSelector } from 'react-redux';
 
 Dashboard.propTypes = {
 
@@ -72,9 +74,12 @@ const listNewsUpdate = [
 ];
 
 function Dashboard(props) {
+    const user = useSelector(state => state.user);
+    const fullName = user.current[STORAGE_USER.FULLNAME];
+
     return (
         <Container>
-            <Typography variant="h6" sx={{ mb: 2 }}>Chào, Trung Nguyễn</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>{`Chào ! ${fullName}.`}</Typography>
             <Grid container spacing={4}>
                 {
                     listWidget.map(item => (

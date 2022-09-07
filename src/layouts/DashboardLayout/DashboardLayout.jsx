@@ -13,11 +13,6 @@ function DashboardLayout(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector(state => state.user);
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const handleLogout = () => {
         const action = logout(user);
@@ -40,9 +35,9 @@ function DashboardLayout(props) {
 
     return (
         <RootStyle>
-            <Header onDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} onLogout={handleLogout} />
-            <SideBar onDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} mobileOpen={mobileOpen} />
-            <MainStyle component="main">
+            <Header drawerWidth={drawerWidth} onLogout={handleLogout} />
+            <SideBar drawerWidth={drawerWidth} />
+            <MainStyle component="main" sx={{ width: '100%' }}>
                 < Outlet />
             </MainStyle>
         </RootStyle >

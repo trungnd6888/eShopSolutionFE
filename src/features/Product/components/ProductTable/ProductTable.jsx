@@ -1,58 +1,44 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Chip, Menu, MenuItem } from '@mui/material';
+import { Avatar, Button, Chip, Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { alpha } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { visuallyHidden } from '@mui/utils';
-import PropTypes from 'prop-types';
-import * as React from 'react';
-import ImageProfile from '../../../../../images/profile-image.jpg';
-import { useState } from 'react';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import moment from 'moment';
+import { PropTypes } from 'prop-types';
+import React, { useState } from 'react';
+import productApi from '../../../../api/productApi';
+import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
+import { formatter, STORAGE_IMAGE } from '../../../../constants/common';
+import ProductTableHead from '../ProductTableHead/ProductTableHead';
+import ProductTableToolbar from '../ProductTableToolbar/ProductTableToolbar';
 
-function createData(name, calories, fat, carbs, protein, image, status) {
-    return {
-        name,
-        calories,
-        fat,
-        carbs,
-        protein,
-        image,
-        status,
-    };
-}
+ProductTable.propTypes = {
+    onAddOpenClick: PropTypes.func,
+    productList: PropTypes.array,
+    categoryList: PropTypes.array,
+    onSubmit: PropTypes.func,
+    onRemoveClick: PropTypes.func,
+    onToolbarRemoveClick: PropTypes.func,
+};
 
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3, ImageProfile, true),
-    createData('Donut', 452, 25.0, 51, 4.9, ImageProfile, true),
-    createData('Eclair', 262, 16.0, 24, 6.0, ImageProfile, true),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, ImageProfile, false),
-    createData('Gingerbread', 356, 16.0, 49, 3.9, ImageProfile, false),
-    createData('Honeycomb', 408, 3.2, 87, 6.5, ImageProfile, true),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, ImageProfile, false),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0, ImageProfile, false),
-    createData('KitKat', 518, 26.0, 65, 7.0, ImageProfile, true),
-    createData('Lollipop', 392, 0.2, 98, 0.0, ImageProfile, false),
-    createData('Marshmallow', 318, 0, 81, 2.0, ImageProfile, true),
-    createData('Nougat', 360, 19.0, 9, 37.0, ImageProfile, false),
-    createData('Oreo', 437, 18.0, 63, 4.0, ImageProfile, false),
-];
+ProductTable.defaultValues = {
+    onAddOpenClick: null,
+    productList: [],
+    categoryList: [],
+    onSubmit: null,
+    onRemoveClick: null,
+    onToolbarRemoveClick: null,
+};
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -84,176 +70,56 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-    {
-        id: 'name',
-        numeric: false,
-        disablePadding: true,
-        label: 'Dessert (100g serving)',
-    },
-    {
-        id: 'calories',
-        numeric: true,
-        disablePadding: false,
-        label: 'Calories',
-    },
-    {
-        id: 'fat',
-        numeric: true,
-        disablePadding: false,
-        label: 'Fat (g)',
-    },
-    {
-        id: 'carbs',
-        numeric: true,
-        disablePadding: false,
-        label: 'Carbs (g)',
-    },
-    {
-        id: 'protein',
-        numeric: true,
-        disablePadding: false,
-        label: 'Protein (g)',
-    },
-    {
-        id: 'image',
-        numeric: false,
-        disablePadding: false,
-        label: 'Image',
-    },
-    {
-        id: 'status',
-        numeric: false,
-        disablePadding: false,
-        label: 'Status',
-    },
-    {
-        id: 'control',
-        numeric: false,
-        disablePadding: false,
-        label: '',
-    },
-];
-
-function ProductTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-        props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts',
-                        }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-ProductTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
-
-const ProductTableToolbar = (props) => {
-    const { numSelected } = props;
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    Nutrition
-                </Typography>
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-};
-
-ProductTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
-
-export default function ProductTable() {
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+function ProductTable({
+    productList,
+    categoryList,
+    onSubmit,
+    onAddOpenClick,
+    onRemoveClick,
+    onToolbarRemoveClick,
+}) {
+    const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 5 });
+    const { page, rowsPerPage } = pagination;
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('createDate');
+    const [selected, setSelected] = useState([]);
     const [controlAnchorEl, setControlAnchorEl] = useState(null);
+    const [product, setProduct] = useState(null);
+    const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
     const open = Boolean(controlAnchorEl);
+
+    function createData(name, code, detail, imageUrl, createDate,
+        isApproved, isBestSale, isNew, price, approvedId, userId, id) {
+        return {
+            name,
+            code,
+            detail,
+            imageUrl,
+            createDate,
+            isApproved,
+            isBestSale,
+            isNew,
+            price,
+            approvedId,
+            userId,
+            id,
+        };
+    }
+
+    const rows = productList.map(product => createData(
+        product.name,
+        product.code,
+        product.detail,
+        product.imageUrl,
+        product.createDate,
+        product.isApproved,
+        product.isBestSale,
+        product.isNew,
+        product.price,
+        product.approvedId,
+        product.userId,
+        product.id,
+    ));
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -263,19 +129,19 @@ export default function ProductTable() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = rows.map((n) => n.id);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleCheckboxClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -292,24 +158,73 @@ export default function ProductTable() {
     };
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setPagination(pre => ({ ...pre, page: newPage }));
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+        setPagination(pre => ({
+            ...pre,
+            rowsPerPage: parseInt(event.target.value, 10),
+            page: 0,
+        }))
     };
 
-    const handleControlClick = (event) => {
+    const handleControlOpen = async (event) => {
         event.stopPropagation();
         setControlAnchorEl(event.currentTarget);
+
+        const productId = event.currentTarget?.dataset.id
+        if (!productId) return;
+
+        try {
+            const data = await productApi.getById(productId);
+            if (data) setProduct(data);
+        } catch (error) {
+            console.log('Fail to fetch product by id', error);
+        }
     };
 
     const handleControlClose = () => {
         setControlAnchorEl(null);
+        setProduct(null);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const handleSearchSubmit = async (values) => {
+        if (onSubmit) await onSubmit(values);
+        setPagination({ page: 0, rowsPerPage: 5 });
+    };
+
+    const handleAddOpen = (event) => {
+        if (onAddOpenClick) onAddOpenClick(product);
+
+        //close form control 
+        handleControlClose();
+    };
+
+    const handleQuestionDialogOpen = () => {
+        setOpenQuestionDialog(true);
+    };
+
+    const handleQuestionDialogClose = () => {
+        setOpenQuestionDialog(false);
+    };
+
+    const handleAcceptRemove = () => {
+        const productId = product.id;
+        if (onRemoveClick) onRemoveClick(productId);
+
+        //close form when remove success  
+        handleQuestionDialogClose();
+        handleControlClose();
+    };
+
+    const handleToolbarAcceptRemove = () => {
+        if (onToolbarRemoveClick) onToolbarRemoveClick(selected);
+
+        setSelected([]);
+    };
+
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -318,13 +233,18 @@ export default function ProductTable() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <ProductTableToolbar numSelected={selected.length} />
+                <ProductTableToolbar
+                    onAddOpenClick={handleAddOpen}
+                    numSelected={selected.length}
+                    categoryList={categoryList}
+                    onSubmit={handleSearchSubmit}
+                    onAccept={handleToolbarAcceptRemove}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                     >
-                        {console.log("render")}
                         <ProductTableHead
                             numSelected={selected.length}
                             order={order}
@@ -339,22 +259,21 @@ export default function ProductTable() {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row.id + row.code}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
-                                                    onClick={(event) => handleClick(event, row.name)}
+                                                    onClick={(event) => handleCheckboxClick(event, row.id)}
                                                     color="primary"
                                                     checked={isItemSelected}
                                                     inputProps={{
@@ -370,23 +289,41 @@ export default function ProductTable() {
                                             >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell align="right">{row.calories}</TableCell>
-                                            <TableCell align="right">{row.fat}</TableCell>
-                                            <TableCell align="right">{row.carbs}</TableCell>
-                                            <TableCell align="right">{row.protein}</TableCell>
+                                            <TableCell align="left">{row.code}</TableCell>
+                                            <TableCell align="right">{row.detail}</TableCell>
                                             <TableCell align="left">
-                                                <Avatar variant='square' src={row.image} sx={{ width: 50, height: 50, borderRadius: 1 }} />
+                                                <Avatar variant='square' src={row.imageUrl ? row.imageUrl : STORAGE_IMAGE.PRODUCT_THUMBNAI} sx={{ width: 50, height: 50, borderRadius: 1 }} />
                                             </TableCell>
-                                            <TableCell align='left'>
+                                            <TableCell align="right">{moment(row.createDate).format('DD/MM/YYYY')}</TableCell>
+                                            <TableCell align="right">{formatter.format(row.price)}</TableCell>
+                                            <TableCell align="right">{row.approvedId}</TableCell>
+                                            <TableCell align="right">{row.userId}</TableCell>
+                                            <TableCell align="left">
                                                 <Chip
-                                                    label={row.status ? 'Active' : 'Disable'}
+                                                    label={row.isApproved ? 'Active' : 'Disable'}
                                                     size="small"
-                                                    color={row.status ? 'success' : 'error'}
+                                                    color={row.isApproved ? 'success' : 'error'}
+                                                    sx={{ fontWeight: '500' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Chip
+                                                    label={row.isBestSale ? 'Active' : 'Disable'}
+                                                    size="small"
+                                                    color={row.isBestSale ? 'success' : 'error'}
+                                                    sx={{ fontWeight: '500' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Chip
+                                                    label={row.isNew ? 'Active' : 'Disable'}
+                                                    size="small"
+                                                    color={row.isNew ? 'success' : 'error'}
                                                     sx={{ fontWeight: '500' }}
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <IconButton onClick={handleControlClick}>
+                                                <IconButton data-id={row.id} onClick={handleControlOpen}>
                                                     <MoreVertIcon />
                                                 </IconButton>
                                             </TableCell>
@@ -399,6 +336,27 @@ export default function ProductTable() {
                                 </TableRow>
                             )}
                         </TableBody>
+                        <Menu
+                            onClose={handleControlClose}
+                            open={open}
+                            anchorEl={controlAnchorEl}
+                            elevation={1}
+                        >
+                            <MenuItem sx={{ pr: 3 }} onClick={handleAddOpen}>
+                                <ModeEditIcon sx={{ pb: 0.5 }} />
+                                <Typography variant="subtitle2">Sửa</Typography>
+                            </MenuItem>
+                            <MenuItem sx={{ pr: 3 }} onClick={handleQuestionDialogOpen}>
+                                <DeleteOutlineIcon sx={{ pb: 0.5 }} />
+                                <Typography variant="subtitle2">Xóa</Typography>
+                            </MenuItem>
+                        </Menu>
+                        <QuestionDialog
+                            open={openQuestionDialog}
+                            onClose={handleQuestionDialogClose}
+                            onAccept={handleAcceptRemove}
+                            message="Bạn muốn xóa bản ghi này không ?"
+                        />
                     </Table>
                 </TableContainer>
                 <TablePagination
@@ -410,22 +368,9 @@ export default function ProductTable() {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-                <Menu
-                    onClose={handleControlClose}
-                    open={open}
-                    anchorEl={controlAnchorEl}
-                    elevation={1}
-                >
-                    <MenuItem sx={{ pr: 3 }}>
-                        <ModeEditIcon sx={{ pb: 0.5 }} />
-                        <Typography variant="subtitle2" >Sửa</Typography>
-                    </MenuItem>
-                    <MenuItem sx={{ pr: 3 }}>
-                        <DeleteOutlineIcon sx={{ pb: 0.5 }} />
-                        <Typography variant="subtitle2">Xóa</Typography>
-                    </MenuItem>
-                </Menu>
             </Paper>
-        </Box>
+        </Box >
     );
 }
+
+export default ProductTable;

@@ -32,7 +32,7 @@ function Login() {
                     message = 'Sai tên đăng nhập hoặc mật khẩu';
                     break;
                 default:
-                    message = 'Đăng nhập thất bại'
+                    message = 'Đăng nhập thất bại. Kiểm tra kết nối mạng'
             }
 
             const actionSnackbar = open({

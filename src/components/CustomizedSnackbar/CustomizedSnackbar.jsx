@@ -23,7 +23,7 @@ function CustomizedSnackbar() {
 
     return (
         <Stack spacing={2} sx={{ width: '100%' }}>
-            <Snackbar open={snackbar.status} autoHideDuration={3000} onClose={handleClose}>
+            <Snackbar open={snackbar.status} autoHideDuration={2000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity={snackbar.type} sx={{ width: '100%' }}>
                     {snackbar.message}
                 </Alert>
