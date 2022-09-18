@@ -88,13 +88,13 @@ function ProductTable({
     const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
     const open = Boolean(controlAnchorEl);
 
-    function createData(name, code, detail, imageUrl, createDate,
+    function createData(name, code, detail, images, createDate,
         isApproved, isBestSale, isNew, price, approvedId, userId, id) {
         return {
             name,
             code,
             detail,
-            imageUrl,
+            images,
             createDate,
             isApproved,
             isBestSale,
@@ -110,7 +110,7 @@ function ProductTable({
         product.name,
         product.code,
         product.detail,
-        product.imageUrl,
+        product.images,
         product.createDate,
         product.isApproved,
         product.isBestSale,
@@ -224,6 +224,20 @@ function ProductTable({
         setSelected([]);
     };
 
+    const setImageUrlRow = (row) => {
+        const images = row.images;
+        if (!images) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
+
+        const image = images.find(x => x.sortOrder === 0);
+        if (!image) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
+
+        const url = image.imageUrl;
+        if (!url) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
+
+        const path = `https://localhost:7095${url}`;
+        return path;
+    }
+
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -292,7 +306,11 @@ function ProductTable({
                                             <TableCell align="left">{row.code}</TableCell>
                                             <TableCell align="right">{row.detail}</TableCell>
                                             <TableCell align="left">
-                                                <Avatar variant='square' src={row.imageUrl ? row.imageUrl : STORAGE_IMAGE.PRODUCT_THUMBNAI} sx={{ width: 50, height: 50, borderRadius: 1 }} />
+                                                <Avatar
+                                                    variant='square'
+                                                    sx={{ width: 50, height: 50, borderRadius: 1 }}
+                                                    src={setImageUrlRow(row)}
+                                                />
                                             </TableCell>
                                             <TableCell align="right">{moment(row.createDate).format('DD/MM/YYYY')}</TableCell>
                                             <TableCell align="right">{formatter.format(row.price)}</TableCell>

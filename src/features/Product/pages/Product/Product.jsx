@@ -1,6 +1,7 @@
 import { Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import categoryApi from '../../../../api/categoryApi';
 import distributorApi from '../../../../api/distributorApi';
 import productApi from '../../../../api/productApi';
@@ -20,8 +21,22 @@ function Product(props) {
     const [distributorList, setDistributorList] = useState([]);
     const [openAdd, setOpenAdd] = useState(false);
     const dispatch = useDispatch();
-    const user = useSelector(state => state.user).current;
+    const user = useSelector(state => state.auth).current;
     const userId = user[STORAGE_USER.ID];
+    // const navigate = useNavigate();
+
+    // //Authorize
+    // let isExpired = false;
+    // let isLogin = false;
+    // let roleList = [];
+
+    // if (user) {
+    //     const dateNow = new Date();
+    //     if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
+
+    //     isLogin = !isExpired;
+    //     roleList = user[STORAGE_USER.ROLE] || [];
+    // }
 
     useEffect(() => {
         fetchProduct();
@@ -91,6 +106,11 @@ function Product(props) {
     };
 
     const handleAddSubmit = async (values, handleResetFormAdd) => {
+        // if (!isLogin || !roleList.includes("member")) {
+        //     navigate('/notrole');
+        //     return;
+        // }
+
         const addValues = {
             ...values,
             isNew: false,
@@ -138,11 +158,40 @@ function Product(props) {
             distributors: values.distributors.map(x => x.id),
         }
 
+        const updateFormData = new FormData();
+        for (let key in updateValues) {
+            const updateValue = updateValues[key];
+
+            switch (key) {
+                case 'thumbnailImages0':
+                case 'thumbnailImages1':
+                case 'thumbnailImages2':
+                case 'thumbnailImages3':
+                case 'thumbnailImages4':
+                case 'thumbnailImages5':
+                case 'thumbnailImages6':
+                case 'thumbnailImages7':
+                    if (updateValue.length <= 0) break;
+                    for (let i = 0; i < updateValue.length; i++) {
+                        updateFormData.append(key, updateValue.item(i));
+                    }
+                    break;
+                case 'categories':
+                case 'distributors':
+                    if (updateValue.length <= 0) break;
+                    updateValue.forEach(x => updateFormData.append(key, x));
+                    break;
+                default:
+                    updateFormData.append(key, updateValue);
+                    break;
+            }
+        }
+
         const isUpdate = Boolean(productToAdd) || false;
 
         if (isUpdate) {
             try {
-                await productApi.update(productToAdd.id, updateValues);
+                await productApi.updateFormData(productToAdd.id, updateFormData);
 
                 const actionSnackbar = open({
                     status: true,

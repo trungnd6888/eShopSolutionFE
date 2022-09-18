@@ -27,7 +27,7 @@ function Header({ onLogout, drawerWidth }) {
     const drawer = useSelector(state => state.drawer);
     const dispatch = useDispatch();
 
-    const user = useSelector(state => state.user);
+    const user = useSelector(state => state.auth);
     const name = user.current[STORAGE_USER.NAME];
     const emailAddress = user.current[STORAGE_USER.EMAIL_ADDRESS];
     const avatarImageUrl = user.current[STORAGE_USER.AVATAR_IMAGE_URL];
@@ -71,7 +71,7 @@ function Header({ onLogout, drawerWidth }) {
                     <Avatar
                         alt='image'
                         sx={{ width: '30px', height: '30px' }}
-                        src={avatarImageUrl ? avatarImageUrl : STORAGE_IMAGE.AVATAR_THUMBNAI}
+                        src={avatarImageUrl ? `https://localhost:7095${avatarImageUrl}` : STORAGE_IMAGE.AVATAR_THUMBNAI}
                     />
                 </IconButton>
                 <Menu

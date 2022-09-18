@@ -32,6 +32,12 @@ const productApi = {
     update(id, data) {
         const url = `/products/${id}`;
         return axiosClient.patch(url, data);
+    },
+    updateFormData(id, data) {
+        const url = `/products/${id}`;
+        return axiosClient.patch(url, data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
     }
 };
 

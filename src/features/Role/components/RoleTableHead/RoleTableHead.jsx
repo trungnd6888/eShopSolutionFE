@@ -8,7 +8,7 @@ import { visuallyHidden } from '@mui/utils';
 import { PropTypes } from 'prop-types';
 import * as React from 'react';
 
-UserTableHead.propTypes = {
+RoleTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -19,34 +19,16 @@ UserTableHead.propTypes = {
 
 const headCells = [
     {
-        id: 'userName',
+        id: 'name',
         numeric: false,
         disablePadding: true,
-        label: 'Tên đăng nhập',
+        label: 'Tên vai trò',
     },
     {
-        id: 'fullName',
+        id: 'description',
         numeric: false,
         disablePadding: false,
-        label: 'Họ và tên',
-    },
-    {
-        id: 'email',
-        numeric: false,
-        disablePadding: false,
-        label: 'Email',
-    },
-    {
-        id: 'phoneNumber',
-        numeric: false,
-        disablePadding: false,
-        label: 'Điện thoại',
-    },
-    {
-        id: 'avartaImage',
-        numeric: false,
-        disablePadding: false,
-        label: 'Hình ảnh',
+        label: 'Mô tả',
     },
     {
         id: 'control',
@@ -56,7 +38,7 @@ const headCells = [
     },
 ];
 
-function UserTableHead(props) {
+function RoleTableHead(props) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler = (property) => (event) => {
@@ -102,4 +84,4 @@ function UserTableHead(props) {
     );
 }
 
-export default UserTableHead;
+export default RoleTableHead;

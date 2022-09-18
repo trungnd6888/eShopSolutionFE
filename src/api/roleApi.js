@@ -1,9 +1,9 @@
 import axiosClient from "./axiosClient";
 import qs from 'qs';
 
-const userApi = {
+const roleApi = {
     getAll(params) {
-        const url = '/users';
+        const url = '/roles';
         return axiosClient.get(url, {
             params,
             paramsSerializer: function (params) {
@@ -12,27 +12,21 @@ const userApi = {
         });
     },
     getById(id) {
-        const url = `/users/${id}`;
+        const url = `/roles/${id}`;
         return axiosClient.get(url);
     },
     add(data) {
-        const url = '/users';
+        const url = '/roles';
         return axiosClient.post(url, data);
     },
     remove(id) {
-        const url = `/users/${id}`;
+        const url = `/roles/${id}`;
         return axiosClient.delete(url);
     },
     update(id, data) {
-        const url = `/users/${id}`;
+        const url = `/roles/${id}`;
         return axiosClient.patch(url, data);
-    },
-    updateFormData(id, data) {
-        const url = `/users/${id}`;
-        return axiosClient.patch(url, data, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
     }
 };
 
-export default userApi;
+export default roleApi;

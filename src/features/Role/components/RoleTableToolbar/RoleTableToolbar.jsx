@@ -1,14 +1,16 @@
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid, TextField, Toolbar, Tooltip } from '@mui/material';
+import { Autocomplete, Box, Button, Grid, TextField, Toolbar, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-UserTableToolbar.propTypes = {
+
+RoleTableToolbar.propTypes = {
     onAddOpenClick: PropTypes.func,
     numSelected: PropTypes.number,
     onSubmit: PropTypes.func,
@@ -16,7 +18,7 @@ UserTableToolbar.propTypes = {
     onAccept: PropTypes.func,
 };
 
-UserTableToolbar.defaultValues = {
+RoleTableToolbar.defaultValues = {
     onAddOpenClick: null,
     numberSelected: 0,
     onSubmit: null,
@@ -24,7 +26,7 @@ UserTableToolbar.defaultValues = {
     onAccept: null,
 };
 
-function UserTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
+function RoleTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
     const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
 
     const { register, handleSubmit, control } = useForm({
@@ -33,6 +35,10 @@ function UserTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
 
     const handleOnSubmit = async (values) => {
         if (onSubmit) await onSubmit(values);
+    };
+
+    const handleClickOpenAdd = () => {
+        if (onAddOpenClick) onAddOpenClick();
     };
 
     const handleQuestionDialogClose = () => {
@@ -125,10 +131,36 @@ function UserTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
                         </Button>
                     </Grid>
                     <Grid item xs={12} sm={5} md={4} ></Grid>
+                    <Grid item xs={12} sm={2} md={2} >
+                        <Box sx={{ pr: { md: 1 }, textAlign: { md: 'right' } }}>
+                            <Button
+                                title="Thêm mới"
+                                placement="right"
+                                variant="contained"
+                                onClick={handleClickOpenAdd}
+                                sx={{
+                                    mb: { xs: 4 },
+                                    width: {
+                                        xs: '100%',
+                                        sm: 'auto',
+                                        md: 'auto',
+                                    },
+                                    minWidth: {
+                                        xs: 200,
+                                        sm: 'auto',
+                                        md: 'auto',
+                                    }
+                                }}
+                            >
+                                <AddIcon sx={{ mb: 0.5 }} fontSize="small" />
+                                Thêm
+                            </Button>
+                        </Box>
+                    </Grid>
                 </Grid>
             )}
         </Toolbar >
     );
 }
 
-export default UserTableToolbar;
+export default RoleTableToolbar;

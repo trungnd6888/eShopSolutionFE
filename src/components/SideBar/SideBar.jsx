@@ -41,7 +41,7 @@ function SideBar({ drawerWidth }) {
     const drawer = useSelector(state => state.drawer);
     const dispatch = useDispatch();
 
-    const user = useSelector(state => state.user).current;
+    const user = useSelector(state => state.auth).current;
     const fullName = user[STORAGE_USER.FULLNAME];
     const avatarImageUrl = user[STORAGE_USER.AVATAR_IMAGE_URL];
 
@@ -58,7 +58,7 @@ function SideBar({ drawerWidth }) {
             }}>
                 <Avatar
                     alt='profile-image'
-                    src={avatarImageUrl ? avatarImageUrl : STORAGE_IMAGE.AVATAR_THUMBNAI}
+                    src={avatarImageUrl ? `https://localhost:7095${avatarImageUrl}` : STORAGE_IMAGE.AVATAR_THUMBNAI}
                     sx={{
                         width: 36,
                         height: 36,
@@ -118,7 +118,7 @@ function SideBar({ drawerWidth }) {
             <List>
                 {[
                     { name: 'Đơn hàng', icon: <DeliveryDiningIcon />, url: 'order' },
-                    { name: 'Phân quyền', icon: <ManageAccountsIcon />, url: 'role' },
+                    { name: 'Vai trò', icon: <ManageAccountsIcon />, url: 'role' },
                 ].map((text, index) => (
                     <ListItem
                         disablePadding

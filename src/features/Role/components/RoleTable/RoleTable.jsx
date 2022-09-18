@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Menu, MenuItem } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -15,23 +15,26 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
-import userApi from '../../../../api/userApi';
+import roleApi from '../../../../api/roleApi';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-import { STORAGE_IMAGE } from '../../../../constants/common';
-import UserTableHead from '../UserTableHead/UserTableHead';
-import UserTableToolbar from '../UserTableToolbar/UserTableToolbar';
+import RoleTableHead from '../RoleTableHead/RoleTableHead';
+import RoleTableToolbar from '../RoleTableToolbar/RoleTableToolbar';
+import PeopleIcon from '@mui/icons-material/People';
+import roleClaimApi from '../../../../api/roleClaimApi';
 
-UserTable.propTypes = {
+RoleTable.propTypes = {
     onAddOpenClick: PropTypes.func,
-    userList: PropTypes.array,
+    onRoleClaimOpenClick: PropTypes.func,
+    roleList: PropTypes.array,
     onSubmit: PropTypes.func,
     onRemoveClick: PropTypes.func,
     onToolbarRemoveClick: PropTypes.func,
 };
 
-UserTable.defaultValues = {
+RoleTable.defaultValues = {
     onAddOpenClick: null,
-    userList: [],
+    onRoleClaimOpenClick: null,
+    roleList: [],
     onSubmit: null,
     onRemoveClick: null,
     onToolbarRemoveClick: null,
@@ -67,10 +70,11 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function UserTable({
-    userList,
+function RoleTable({
+    roleList,
     onSubmit,
     onAddOpenClick,
+    onRoleClaimOpenClick,
     onRemoveClick,
     onToolbarRemoveClick,
 }) {
@@ -80,28 +84,23 @@ function UserTable({
     const [orderBy, setOrderBy] = useState('createDate');
     const [selected, setSelected] = useState([]);
     const [controlAnchorEl, setControlAnchorEl] = useState(null);
-    const [user, setUser] = useState(null);
+    const [role, setRole] = useState(null);
+    const [roleClaimList, setRoleClaimList] = useState([]);
     const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
     const open = Boolean(controlAnchorEl);
 
-    function createData(userName, fullName, email, phoneNumber, avatarImage, id) {
+    function createData(name, description, id) {
         return {
-            userName,
-            fullName,
-            email,
-            phoneNumber,
-            avatarImage,
+            name,
+            description,
             id,
         };
     }
 
-    const rows = userList.map(user => createData(
-        user.userName,
-        user.fullName,
-        user.email,
-        user.phoneNumber,
-        user.avatarImage,
-        user.id,
+    const rows = roleList.map(role => createData(
+        role.name,
+        role.description,
+        role.id,
     ));
 
     const handleRequestSort = (event, property) => {
@@ -155,20 +154,24 @@ function UserTable({
         event.stopPropagation();
         setControlAnchorEl(event.currentTarget);
 
-        const userId = event.currentTarget?.dataset.id
-        if (!userId) return;
+        const roleId = event.currentTarget?.dataset.id
+        if (!roleId) return;
 
         try {
-            const data = await userApi.getById(userId);
-            if (data) setUser(data);
+            const role = await roleApi.getById(roleId);
+            if (role) setRole(role);
+
+            const params = { roleId };
+            const roleClaimList = await roleClaimApi.getAll(params);
+            if (roleClaimList) setRoleClaimList(roleClaimList);
         } catch (error) {
-            console.log('Fail to fetch user by id', error);
+            console.log('Fail to fetch role by id', error);
         }
     };
 
     const handleControlClose = () => {
         setControlAnchorEl(null);
-        setUser(null);
+        setRole(null);
     };
 
     const handleSearchSubmit = async (values) => {
@@ -177,7 +180,14 @@ function UserTable({
     };
 
     const handleAddOpen = (event) => {
-        if (onAddOpenClick) onAddOpenClick(user);
+        if (onAddOpenClick) onAddOpenClick(role);
+
+        //close form control 
+        handleControlClose();
+    };
+
+    const handleRoleClaimOpen = () => {
+        if (onRoleClaimOpenClick) onRoleClaimOpenClick(roleClaimList);
 
         //close form control 
         handleControlClose();
@@ -192,8 +202,8 @@ function UserTable({
     };
 
     const handleAcceptRemove = () => {
-        const userId = user.id;
-        if (onRemoveClick) onRemoveClick(userId);
+        const roleId = role.id;
+        if (onRemoveClick) onRemoveClick(roleId);
 
         //close form when remove success  
         handleQuestionDialogClose();
@@ -206,10 +216,6 @@ function UserTable({
         setSelected([]);
     };
 
-    const setImageUrlRow = (path) => {
-        return path ? `https://localhost:7095${path}` : STORAGE_IMAGE.PRODUCT_THUMBNAI;
-    }
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -219,7 +225,7 @@ function UserTable({
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <UserTableToolbar
+                <RoleTableToolbar
                     onAddOpenClick={handleAddOpen}
                     numSelected={selected.length}
                     onSubmit={handleSearchSubmit}
@@ -230,7 +236,7 @@ function UserTable({
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                     >
-                        <UserTableHead
+                        <RoleTableHead
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
@@ -253,7 +259,7 @@ function UserTable({
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.id + row.userName}
+                                            key={row.id + row.name}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
@@ -272,24 +278,9 @@ function UserTable({
                                                 scope="row"
                                                 padding="none"
                                             >
-                                                {row.userName}
+                                                {row.name}
                                             </TableCell>
-                                            <TableCell align="left">
-                                                {row.fullName}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {row.email}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {row.phoneNumber}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                <Avatar
-                                                    variant='square'
-                                                    sx={{ width: 50, height: 50, borderRadius: 1 }}
-                                                    src={setImageUrlRow(row?.avatarImage)}
-                                                />
-                                            </TableCell>
+                                            <TableCell align="left">{row.description}</TableCell>
                                             <TableCell>
                                                 <IconButton data-id={row.id} onClick={handleControlOpen}>
                                                     <MoreVertIcon />
@@ -318,6 +309,10 @@ function UserTable({
                                 <DeleteOutlineIcon sx={{ pb: 0.5 }} />
                                 <Typography variant="subtitle2">Xóa</Typography>
                             </MenuItem>
+                            <MenuItem sx={{ pr: 3 }} onClick={handleRoleClaimOpen}>
+                                <PeopleIcon sx={{ pb: 0.5 }} />
+                                <Typography variant="subtitle2">Quyền</Typography>
+                            </MenuItem>
                         </Menu>
                         <QuestionDialog
                             open={openQuestionDialog}
@@ -341,4 +336,4 @@ function UserTable({
     );
 }
 
-export default UserTable;
+export default RoleTable;
