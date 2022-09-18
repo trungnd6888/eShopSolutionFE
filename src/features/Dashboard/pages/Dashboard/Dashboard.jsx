@@ -74,7 +74,7 @@ const listNewsUpdate = [
 ];
 
 function Dashboard(props) {
-    const user = useSelector(state => state.user);
+    const user = useSelector(state => state.auth);
     const fullName = user.current[STORAGE_USER.FULLNAME];
 
     return (

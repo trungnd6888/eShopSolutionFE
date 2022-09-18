@@ -1,5 +1,5 @@
 import React from 'react';
-import userApi from '../../../../api/UserApi';
+import authApi from '../../../../api/authApi';
 import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
 import { useDispatch } from 'react-redux';
 import { open } from '../../snackbarSlice';
@@ -16,7 +16,7 @@ function ResetPassword(props) {
         try {
             const data = { ...values, email };
             const config = { params: { token } };
-            await userApi.resetPassword(data, config);
+            await authApi.resetPassword(data, config);
 
             const actionSnackbar = open({
                 status: true,

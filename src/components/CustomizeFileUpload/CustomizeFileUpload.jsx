@@ -1,9 +1,8 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, IconButton, styled, Typography } from '@mui/material';
+import { Box, IconButton, styled, TextField, Typography } from '@mui/material';
 import { STORAGE_IMAGE } from '../../constants/common';
 import { PropTypes } from 'prop-types';
 import React, { useState, forwardRef } from 'react';
-
 
 const CustomizeBox = styled(Box)({
     display: "flex",
@@ -13,7 +12,7 @@ const CustomizeBox = styled(Box)({
     width: 68,
 });
 
-const CustomizeInput = styled('input')({
+const CustomizeInput = styled(TextField)({
     display: 'none'
 });
 
@@ -29,8 +28,8 @@ const CustomizeIconButton = styled(IconButton)(({ theme }) => ({
     }
 }));
 
-const CustomizeFileUpload = forwardRef(({ title, name, onChange, onBlur }, ref) => {
-    const [imageUrl, setImageUrl] = useState('');
+const CustomizeFileUpload = forwardRef(({ title, name, onChange, onBlur, onClose, initImageUrl }, ref) => {
+    const [imageUrl, setImageUrl] = useState(initImageUrl);
 
     const handleChange = (e) => {
         if (onChange) onChange(e);
@@ -40,6 +39,7 @@ const CustomizeFileUpload = forwardRef(({ title, name, onChange, onBlur }, ref) 
     };
 
     const handleClose = () => {
+        if (onClose) onClose();
         setImageUrl('');
     };
 
@@ -63,9 +63,12 @@ const CustomizeFileUpload = forwardRef(({ title, name, onChange, onBlur }, ref) 
                     name={name}
                     ref={ref}
                 />
-                <CustomizeIconButton onClick={handleClose} >
-                    <CloseIcon sx={{ width: 18, height: 18 }} />
-                </CustomizeIconButton >
+                {
+                    !!imageUrl &&
+                    <CustomizeIconButton onClick={handleClose}  >
+                        <CloseIcon sx={{ width: 18, height: 18 }} />
+                    </CustomizeIconButton >
+                }
             </CustomizeLabel>
             <Typography sx={{ mt: 1, textAlign: 'center', fontSize: 12 }}>{title}</Typography>
         </ CustomizeBox >
@@ -77,6 +80,8 @@ CustomizeFileUpload.propTypes = {
     name: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
+    onClose: PropTypes.func,
+    initImageUrl: PropTypes.string,
 };
 
 CustomizeFileUpload.defaultValues = {
@@ -84,7 +89,8 @@ CustomizeFileUpload.defaultValues = {
     name: '',
     onChange: null,
     onBlur: null,
+    onClose: null,
+    initImageUrl: '',
 };
-
 
 export default CustomizeFileUpload;
