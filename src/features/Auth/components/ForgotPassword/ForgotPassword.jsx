@@ -1,5 +1,5 @@
 import React from 'react';
-import userApi from '../../../../api/UserApi';
+import authApi from '../../../../api/authApi';
 import { open } from '../../snackbarSlice';
 import ForgotPasswordForm from '../ForgotPasswordForm/ForgotPasswordForm';
 import { useDispatch } from 'react-redux';
@@ -13,7 +13,7 @@ function ForgotPassword(props) {
 
     const handleSubmit = async (values) => {
         try {
-            await userApi.forgotPassword(values);
+            await authApi.forgotPassword(values);
 
             console.log('Forgot password success !');
             const actionSnackbar = open({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { register } from '../../userSlice';
+import { register } from '../../authSlice';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import { useNavigate } from 'react-router-dom';
 import { open } from '../../snackbarSlice'

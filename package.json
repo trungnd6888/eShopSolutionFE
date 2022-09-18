@@ -40,5 +40,14 @@
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.0",
     "vite": "^3.0.0"
-  }
+  },
+  "main": "index.js",
+  "repository": "git+ssh://git@github.com/trungnd6888/eShopSolutionFE.git",
+  "author": "Trung Nguyen <trungk47s5@gmail.com>",
+  "license": "MIT",
+  "description": "",
+  "bugs": {
+    "url": "https://github.com/trungnd6888/eShopSolutionFE/issues"
+  },
+  "homepage": "https://github.com/trungnd6888/eShopSolutionFE#readme"
 }

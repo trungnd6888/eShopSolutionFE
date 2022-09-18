@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useRoutes } from 'react-router-dom';
 import NotFound from './src/components/NotFound/NotFound';
+import NotRole from './src/components/NotRole/pages/NotRole/NotRole';
 import { STORAGE_USER } from './src/constants/common';
 import ForgotPassword from './src/features/Auth/components/ForgotPassword/ForgotPassword';
 import Login from './src/features/Auth/components/Login/Login';
@@ -14,7 +15,7 @@ import Customer from './src/features/Customer/pages/Customer/Customer';
 import Dashboard from './src/features/Dashboard/pages/Dashboard/Dashboard';
 import Distributor from './src/features/Distributor/pages/Distributor/Distributor';
 import News from './src/features/News/pages/News/News';
-import NotRole from './src/features/NotRole/pages/NotRole/NotRole';
+import Role from './src/features/Role/pages/Role/Role';
 import Order from './src/features/Order/pages/Order/Order';
 import Product from './src/features/Product/pages/Product/Product';
 import User from './src/features/User/pages/User/User';
@@ -24,18 +25,17 @@ Router.propTypes = {
 };
 
 function Router(props) {
-    const user = useSelector(state => state.user).current;
-    // console.log('user: ', user);
+    const user = useSelector(state => state.auth).current;
     let isExpired = false;
     let isLogin = false;
-    let roleList = [];
+    // let roleList = [];
 
     if (user) {
         const dateNow = new Date();
         if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
 
         isLogin = !isExpired;
-        roleList = user[STORAGE_USER.ROLE].split(',');
+        // roleList = user[STORAGE_USER.ROLE] || [];
     }
 
     return useRoutes([
@@ -81,44 +81,41 @@ function Router(props) {
                 { path: "dashboard", element: <Dashboard /> },
                 {
                     path: "product",
-                    element: roleList.includes('admin') || roleList.includes('member')
-                        ? <Product />
-                        : <NotRole />
+                    element: isLogin ? <Product /> : <NotRole />
                 },
                 {
-                    path: "user", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <User />
-                        : <NotRole />
+                    path: "user",
+                    element: isLogin ? <User /> : <NotRole />
                 },
                 {
-                    path: "customer", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <Customer />
-                        : <NotRole />
+                    path: "customer",
+                    element: isLogin ? <Customer /> : <NotRole />
                 },
                 {
-                    path: "category", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <Category />
-                        : <NotRole />
+                    path: "category",
+                    element: isLogin ? <Category /> : <NotRole />
                 },
                 {
-                    path: "distributor", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <Distributor />
-                        : <NotRole />
+                    path: "distributor",
+                    element: isLogin ? <Distributor /> : <NotRole />
                 },
                 {
-                    path: "news", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <News />
-                        : <NotRole />
+                    path: "news",
+                    element: isLogin ? <News /> : <NotRole />
                 },
                 {
-                    path: "order", element: roleList.includes('admin') || roleList.includes('member')
-                        ? <Order />
-                        : <NotRole />
+                    path: "order",
+                    element: isLogin ? <Order /> : <NotRole />
+                },
+                {
+                    path: "role",
+                    element: isLogin ? <Role /> : <NotRole />
                 },
             ]
         },
         { path: "404", element: <NotFound /> },
-        { path: "*", element: <Navigate to='404' /> }
+        { path: "notrole", element: <NotRole /> },
+        { path: "*", element: <Navigate to='404' /> },
     ]);
 }
 

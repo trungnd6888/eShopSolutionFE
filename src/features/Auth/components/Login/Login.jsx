@@ -1,5 +1,5 @@
 import React from 'react';
-import { login } from '../../userSlice';
+import { login } from '../../authSlice';
 import LoginForm from '../LoginForm/LoginForm';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';

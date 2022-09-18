@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import SideBar from '../../components/SideBar/SideBar';
-import { logout } from '../../features/Auth/userSlice';
+import { logout } from '../../features/Auth/authSlice';
 
 const drawerWidth = 240;
 
