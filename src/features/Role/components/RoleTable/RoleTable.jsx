@@ -172,6 +172,7 @@ function RoleTable({
     const handleControlClose = () => {
         setControlAnchorEl(null);
         setRole(null);
+        setRoleClaimList([]);
     };
 
     const handleSearchSubmit = async (values) => {
@@ -187,7 +188,7 @@ function RoleTable({
     };
 
     const handleRoleClaimOpen = () => {
-        if (onRoleClaimOpenClick) onRoleClaimOpenClick(roleClaimList);
+        if (onRoleClaimOpenClick) onRoleClaimOpenClick(roleClaimList, role);
 
         //close form control 
         handleControlClose();
