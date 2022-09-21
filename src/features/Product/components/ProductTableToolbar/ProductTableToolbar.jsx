@@ -8,7 +8,9 @@ import Typography from '@mui/material/Typography';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
+import { open } from '../../../Auth/snackbarSlice';
 
 ProductTableToolbar.propTypes = {
     onAddOpenClick: PropTypes.func,
@@ -29,6 +31,27 @@ ProductTableToolbar.defaultValues = {
 };
 
 function ProductTableToolbar({ numSelected, categoryList, onSubmit, onAddOpenClick, onAccept }) {
+    const user = useSelector(state => state.auth).current;
+    const dispatch = useDispatch();
+    //Authorize
+    const checkLogin = (user) => {
+        if (!user) return false;
+
+        let isExpired = false;
+        const dateNow = new Date();
+        if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
+
+        return !isExpired;
+    };
+
+    const isLogin = checkLogin(user);
+
+    const checkRoleClaim = (claimType, claimValue) => {
+        return user[claimType]?.includes(claimValue);
+    }
+
+    const isRemoveRole = checkRoleClaim('product', 'product.remove');
+
     const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
 
     const { register, handleSubmit, control } = useForm({
@@ -55,6 +78,17 @@ function ProductTableToolbar({ numSelected, categoryList, onSubmit, onAddOpenCli
     };
 
     const handleRemove = () => {
+        if (!isLogin || !isRemoveRole) {
+            const actionSnackbar = open({
+                status: true,
+                message: 'Không có quyền truy cập chức năng này',
+                type: 'error',
+            });
+            dispatch(actionSnackbar);
+
+            return;
+        }
+
         setOpenQuestionDialog(true);
     };
 

@@ -74,56 +74,82 @@ RoleClaim.defaultValues = {
 };
 
 function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
+    const rows = [
+        {
+            id: 1,
+            nameControl: 'product',
+            label: 'Sản phẩm',
+            groupId: 1,
+        },
+        {
+            id: 2,
+            nameControl: 'category',
+            label: 'Bộ sưu tập',
+            groupId: 1,
+        },
+        {
+            id: 3,
+            nameControl: 'news',
+            label: 'Tin tức',
+            groupId: 1,
+        },
+        {
+            id: 4,
+            nameControl: 'distributor',
+            label: 'Nhà phân phối',
+            groupId: 1,
+        },
+        {
+            id: 5,
+            nameControl: 'order',
+            label: 'Đơn hàng',
+            groupId: 2,
+        },
+        {
+            id: 6,
+            nameControl: 'customer',
+            label: 'Khách hàng',
+            groupId: 2,
+        },
+        {
+            id: 7,
+            nameControl: 'permission',
+            label: 'Vai trò',
+            groupId: 3,
+        },
+        {
+            id: 8,
+            nameControl: 'user',
+            label: 'Người dùng',
+            groupId: 3,
+        },
+    ]
+
+    const groups = [
+        {
+            id: 1,
+            name: 'Quản lý danh mục ',
+        },
+        {
+            id: 2,
+            name: 'Quản lý bán hàng',
+        },
+        {
+            id: 3,
+            name: 'Quản lý hệ thống',
+        },
+    ]
+
     const isUpdate = Boolean(roleClaimList) || false;
-    const initialValues = {
-        product: false,
-        productView: false,
-        productCreate: false,
-        productUpdate: false,
-        productRemove: false,
 
-        category: false,
-        categoryView: false,
-        categoryCreate: false,
-        categoryUpdate: false,
-        categoryRemove: false,
-
-        news: false,
-        newsView: false,
-        newsCreate: false,
-        newsUpdate: false,
-        newsRemove: false,
-
-        distributor: false,
-        distributorView: false,
-        distributorCreate: false,
-        distributorUpdate: false,
-        distributorRemove: false,
-
-        user: false,
-        userView: false,
-        userCreate: false,
-        userUpdate: false,
-        userRemove: false,
-
-        order: false,
-        orderView: false,
-        orderCreate: false,
-        orderUpdate: false,
-        orderRemove: false,
-
-        customer: false,
-        customerView: false,
-        customerCreate: false,
-        customerUpdate: false,
-        customerRemove: false,
-
-        role: false,
-        roleView: false,
-        roleCreate: false,
-        roleUpdate: false,
-        roleRemove: false,
-    };
+    const initialValues = {};
+    rows.forEach(x => {
+        initialValues[x.nameControl] = false;
+        initialValues[`${x.nameControl}View`] = false;
+        initialValues[`${x.nameControl}Create`] = false;
+        initialValues[`${x.nameControl}Update`] = false;
+        initialValues[`${x.nameControl}Remove`] = false;
+    })
 
     const setResetValue = (claimType, claimValue) => {
         return isUpdate
@@ -131,79 +157,17 @@ function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
             : false
     }
 
-    const resetValues = {
-        productView: setResetValue('product', 'product.view'),
-        productCreate: setResetValue('product', 'product.create'),
-        productUpdate: setResetValue('product', 'product.update'),
-        productRemove: setResetValue('product', 'product.remove'),
-        product: setResetValue('product', 'product.view')
-            && setResetValue('product', 'product.create')
-            && setResetValue('product', 'product.update')
-            && setResetValue('product', 'product.remove'),
-
-        categoryView: setResetValue('category', 'category.view'),
-        categoryCreate: setResetValue('category', 'category.create'),
-        categoryUpdate: setResetValue('category', 'category.update'),
-        categoryRemove: setResetValue('category', 'category.remove'),
-        category: setResetValue('category', 'category.view')
-            && setResetValue('category', 'category.create')
-            && setResetValue('category', 'category.update')
-            && setResetValue('category', 'category.remove'),
-
-        distributorView: setResetValue('distributor', 'distributor.view'),
-        distributorCreate: setResetValue('distributor', 'distributor.create'),
-        distributorUpdate: setResetValue('distributor', 'distributor.update'),
-        distributorRemove: setResetValue('distributor', 'distributor.remove'),
-        distributor: setResetValue('distributor', 'distributor.view')
-            && setResetValue('distributor', 'distributor.create')
-            && setResetValue('distributor', 'distributor.update')
-            && setResetValue('distributor', 'distributor.remove'),
-
-        userView: setResetValue('user', 'user.view'),
-        userCreate: setResetValue('user', 'user.create'),
-        userUpdate: setResetValue('user', 'user.update'),
-        userRemove: setResetValue('user', 'user.remove'),
-        user: setResetValue('user', 'user.view')
-            && setResetValue('user', 'user.create')
-            && setResetValue('user', 'user.update')
-            && setResetValue('user', 'user.remove'),
-
-        customerView: setResetValue('customer', 'customer.view'),
-        customerCreate: setResetValue('customer', 'customer.create'),
-        customerUpdate: setResetValue('customer', 'customer.update'),
-        customerRemove: setResetValue('customer', 'customer.remove'),
-        customer: setResetValue('customer', 'customer.view')
-            && setResetValue('customer', 'customer.create')
-            && setResetValue('customer', 'customer.update')
-            && setResetValue('customer', 'customer.remove'),
-
-        orderView: setResetValue('order', 'order.view'),
-        orderCreate: setResetValue('order', 'order.create'),
-        orderUpdate: setResetValue('order', 'order.update'),
-        orderRemove: setResetValue('order', 'order.remove'),
-        order: setResetValue('order', 'order.view')
-            && setResetValue('order', 'order.create')
-            && setResetValue('order', 'order.update')
-            && setResetValue('order', 'order.remove'),
-
-        newsView: setResetValue('news', 'news.view'),
-        newsCreate: setResetValue('news', 'news.create'),
-        newsUpdate: setResetValue('news', 'news.update'),
-        newsRemove: setResetValue('news', 'news.remove'),
-        news: setResetValue('news', 'news.view')
-            && setResetValue('news', 'news.create')
-            && setResetValue('news', 'news.update')
-            && setResetValue('news', 'news.remove'),
-
-        roleView: setResetValue('role', 'role.view'),
-        roleCreate: setResetValue('role', 'role.create'),
-        roleUpdate: setResetValue('role', 'role.update'),
-        roleRemove: setResetValue('role', 'role.remove'),
-        role: setResetValue('role', 'role.view')
-            && setResetValue('role', 'role.create')
-            && setResetValue('role', 'role.update')
-            && setResetValue('role', 'role.remove'),
-    };
+    const resetValues = {}
+    rows.forEach(x => {
+        resetValues[`${x.nameControl}View`] = setResetValue(x.nameControl, `${x.nameControl}.view`);
+        resetValues[`${x.nameControl}Create`] = setResetValue(x.nameControl, `${x.nameControl}.create`);
+        resetValues[`${x.nameControl}Update`] = setResetValue(x.nameControl, `${x.nameControl}.update`);
+        resetValues[`${x.nameControl}Remove`] = setResetValue(x.nameControl, `${x.nameControl}.remove`);
+        resetValues[x.nameControl] = setResetValue(x.nameControl, `${x.nameControl}.view`)
+            && setResetValue(x.nameControl, `${x.nameControl}.create`)
+            && setResetValue(x.nameControl, `${x.nameControl}.update`)
+            && setResetValue(x.nameControl, `${x.nameControl}.remove`)
+    });
 
     const schema = yup.object().shape({
         productView: yup.boolean(),
@@ -220,14 +184,13 @@ function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
         if (reason === 'backdropClick') return;
         if (onClose) onClose();
 
-        handleFormReset(initialValues);
+        setTimeout(() => {
+            handleFormReset(initialValues);
+        }, 500);
     };
 
     const handleFormSubmit = async (values) => {
-        console.log('values: ', values);
-        if (onSubmit) await onSubmit(values, () => {
-            handleFormReset(initialValues)
-        });
+        if (onSubmit) await onSubmit(values, () => { handleFormReset(initialValues) });
     };
 
     const handleFormReset = (data) => {
@@ -292,87 +255,26 @@ function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
                 <DialogContent>
                     <Container >
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={12} md={12} >
-                                <Typography variant="button">Quản lý danh mục</Typography>
+                            {groups.map(x =>
+                            (<Grid container item key={x.id + x.name} >
+                                <Grid item xs={12} sm={12} md={12}>
+                                    <Typography variant="button">{x.name}</Typography>
+                                </Grid>
+
+                                {rows.map(y =>
+                                    (y.groupId === x.id) &&
+                                    < Grid item xs={12} sm={6} md={4} key={y.id + y.nameControl}>
+                                        <IndeterminateCheckbox
+                                            control={control}
+                                            nameControl={y.nameControl}
+                                            label={y.label}
+                                            onCheckAllClick={handleCheckAllClick}
+                                            onCheckItemClick={handleCheckItemClick}
+                                        />
+                                    </Grid>
+                                )}
                             </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="product"
-                                    label="Sản phẩm"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="category"
-                                    label="Bộ sưu tập"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="news"
-                                    label="Tin tức"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="distributor"
-                                    label="Nhà phân phối"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <Typography variant='button'>Quản lý bán hàng</Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="order"
-                                    label="Đơn hàng"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="customer"
-                                    label="Khách hàng"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <Typography variant='button'>Quản lý hệ thống</Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="role"
-                                    label="Vai trò"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <IndeterminateCheckbox
-                                    control={control}
-                                    nameControl="user"
-                                    label="Người dùng"
-                                    onCheckAllClick={handleCheckAllClick}
-                                    onCheckItemClick={handleCheckItemClick}
-                                />
-                            </Grid>
+                            ))}
                         </Grid>
                     </Container>
                 </DialogContent>

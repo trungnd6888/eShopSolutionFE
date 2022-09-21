@@ -16,11 +16,13 @@ import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import productApi from '../../../../api/productApi';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
 import { formatter, STORAGE_IMAGE } from '../../../../constants/common';
 import ProductTableHead from '../ProductTableHead/ProductTableHead';
 import ProductTableToolbar from '../ProductTableToolbar/ProductTableToolbar';
+import { open } from '../../../Auth/snackbarSlice';
 
 ProductTable.propTypes = {
     onAddOpenClick: PropTypes.func,
@@ -86,7 +88,27 @@ function ProductTable({
     const [controlAnchorEl, setControlAnchorEl] = useState(null);
     const [product, setProduct] = useState(null);
     const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
-    const open = Boolean(controlAnchorEl);
+    const openAnchorEl = Boolean(controlAnchorEl);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.auth).current;
+    //Authorize
+    const checkLogin = (user) => {
+        if (!user) return false;
+
+        let isExpired = false;
+        const dateNow = new Date();
+        if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
+
+        return !isExpired;
+    };
+
+    const isLogin = checkLogin(user);
+
+    const checkRoleClaim = (claimType, claimValue) => {
+        return user[claimType]?.includes(claimValue);
+    }
+
+    const isRemoveRole = checkRoleClaim('product', 'product.remove');
 
     function createData(name, code, detail, images, createDate,
         isApproved, isBestSale, isNew, price, approvedId, userId, id) {
@@ -202,6 +224,17 @@ function ProductTable({
     };
 
     const handleQuestionDialogOpen = () => {
+        if (!isLogin || !isRemoveRole) {
+            const actionSnackbar = open({
+                status: true,
+                message: 'Không có quyền truy cập chức năng này',
+                type: 'error',
+            });
+            dispatch(actionSnackbar);
+
+            return;
+        }
+
         setOpenQuestionDialog(true);
     };
 
@@ -356,7 +389,7 @@ function ProductTable({
                         </TableBody>
                         <Menu
                             onClose={handleControlClose}
-                            open={open}
+                            open={openAnchorEl}
                             anchorEl={controlAnchorEl}
                             elevation={1}
                         >

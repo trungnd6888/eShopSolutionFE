@@ -64,7 +64,7 @@ const headCells = [
         id: 'userId',
         numeric: true,
         disablePadding: false,
-        label: 'Mã người dùng',
+        label: 'Mã người tạo',
     },
 
     {

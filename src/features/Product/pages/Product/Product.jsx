@@ -23,20 +23,25 @@ function Product(props) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth).current;
     const userId = user[STORAGE_USER.ID];
-    // const navigate = useNavigate();
+    //Authorize
+    const checkLogin = (user) => {
+        if (!user) return false;
 
-    // //Authorize
-    // let isExpired = false;
-    // let isLogin = false;
-    // let roleList = [];
+        let isExpired = false;
+        const dateNow = new Date();
+        if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
 
-    // if (user) {
-    //     const dateNow = new Date();
-    //     if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
+        return !isExpired;
+    };
 
-    //     isLogin = !isExpired;
-    //     roleList = user[STORAGE_USER.ROLE] || [];
-    // }
+    const isLogin = checkLogin(user);
+
+    const checkRoleClaim = (claimType, claimValue) => {
+        return user[claimType]?.includes(claimValue);
+    }
+
+    const isUpdateRole = checkRoleClaim('product', 'product.update');
+    const isCreateRole = checkRoleClaim('product', 'product.create');
 
     useEffect(() => {
         fetchProduct();
@@ -49,6 +54,33 @@ function Product(props) {
     };
 
     const handleClickOpenAdd = (product) => {
+        const isUpdate = Boolean(product) || false;
+
+        if (isUpdate) {
+            if (!isLogin || !isUpdateRole) {
+                const actionSnackbar = open({
+                    status: true,
+                    message: 'Không có quyền truy cập chức năng này',
+                    type: 'error',
+                });
+                dispatch(actionSnackbar);
+
+                return;
+            }
+        }
+        else {
+            if (!isLogin || !isCreateRole) {
+                const actionSnackbar = open({
+                    status: true,
+                    message: 'Không có quyền truy cập chức năng này',
+                    type: 'error',
+                });
+                dispatch(actionSnackbar);
+
+                return;
+            }
+        }
+
         setOpenAdd(true);
         setProductToAdd(product);
     }
@@ -106,11 +138,6 @@ function Product(props) {
     };
 
     const handleAddSubmit = async (values, handleResetFormAdd) => {
-        // if (!isLogin || !roleList.includes("member")) {
-        //     navigate('/notrole');
-        //     return;
-        // }
-
         const addValues = {
             ...values,
             isNew: false,
