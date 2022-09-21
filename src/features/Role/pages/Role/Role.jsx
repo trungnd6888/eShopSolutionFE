@@ -2,9 +2,10 @@ import { Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import roleApi from '../../../../api/roleApi';
+import roleClaimApi from '../../../../api/roleClaimApi';
 import { open } from '../../../Auth/snackbarSlice';
-import RoleClaim from '../../components/RoleClaim/RoleClaim';
 import RoleAdd from '../../components/RoleAdd/RoleAdd';
+import RoleClaim from '../../components/RoleClaim/RoleClaim';
 import RoleTable from '../../components/RoleTable/RoleTable';
 
 Role.propTypes = {
@@ -19,6 +20,8 @@ function Role(props) {
     const [openRoleClaim, setOpenRoleClaim] = useState(false);
     const dispatch = useDispatch();
 
+    const rows = ['product', 'category', 'news', 'distributor', 'order', 'customer', 'permission', 'user'];
+
     useEffect(() => {
         fetchRole();
     }, []);
@@ -32,9 +35,10 @@ function Role(props) {
         setRoleToAdd(role);
     }
 
-    const handleRoleClaimClickOpen = (roleClaimList) => {
+    const handleRoleClaimClickOpen = (roleClaimList, role) => {
         setOpenRoleClaim(true);
         setRoleClaimList(roleClaimList);
+        setRoleToAdd(role);
     }
 
     const handleRemoveClick = async (roleId) => {
@@ -162,20 +166,67 @@ function Role(props) {
         }, 300);
     };
 
-    const handleRoleClaimSubmit = async (values, handleResetFormAdd) => {
+    const handleRoleClaimSubmit = async (values, handleRoleClaimFormReset) => {
         const updateValues = {
             ...values,
         }
+
+        const roleClaimNewList = [];
+        rows.forEach(x => {
+            for (const prop in updateValues) {
+                if (prop === `${x}View` && updateValues[prop] === true) {
+                    roleClaimNewList.push({
+                        roleId: roleToAdd.id,
+                        claimType: x,
+                        claimValue: `${x}.view`,
+                    });
+                }
+
+                if (prop === `${x}Create` && updateValues[prop] === true) {
+                    roleClaimNewList.push({
+                        roleId: roleToAdd.id,
+                        claimType: x,
+                        claimValue: `${x}.create`,
+                    });
+                }
+
+                if (prop === `${x}Update` && updateValues[prop] === true) {
+                    roleClaimNewList.push({
+                        roleId: roleToAdd.id,
+                        claimType: x,
+                        claimValue: `${x}.update`,
+                    });
+                }
+
+                if (prop === `${x}Remove` && updateValues[prop] === true) {
+                    roleClaimNewList.push({
+                        roleId: roleToAdd.id,
+                        claimType: x,
+                        claimValue: `${x}.remove`,
+                    });
+                }
+            }
+        });
 
         const isUpdate = Boolean(roleClaimList) || false;
 
         if (isUpdate) {
             try {
-                await roleApi.update(roleToAdd.id, updateValues);
+                //get old roleClaim
+                const params = {
+                    roleId: roleToAdd.id
+                };
+                const roleClaimOldList = await roleClaimApi.getAll(params);
+
+                //remove old roleClaim
+                roleClaimOldList.forEach(async (x) => await roleClaimApi.remove(x.id));
+
+                //add new roleClaim
+                roleClaimNewList.forEach(async (x) => await roleClaimApi.add(x));
 
                 const actionSnackbar = open({
                     status: true,
-                    message: 'Cập nhật phân quyền thành công',
+                    message: 'Cập nhật quyền thành công',
                     type: 'success',
                 });
                 dispatch(actionSnackbar);
@@ -185,13 +236,13 @@ function Role(props) {
                 }, 700);
 
                 setTimeout(() => {
-                    handleResetFormAdd();
+                    handleRoleClaimFormReset();
                     fetchRole();
                 }, 1500);
             } catch (error) {
                 const actionSnackbar = open({
                     status: true,
-                    message: 'Cập nhật phân quyền không thành công',
+                    message: 'Cập nhật quyền không thành công',
                     type: 'error',
                 });
                 dispatch(actionSnackbar);

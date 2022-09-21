@@ -24,9 +24,10 @@ axiosClient.interceptors.response.use(function (response) {
     return response.data;
 }, function (error) {
     const { data, config, status } = error.response;
-    const urlList = ['/users/authenticate', '/users/register']
+    const urlList = ['/auth/authenticate', '/auth/register']
 
     if (urlList.includes(config?.url) && status == 401) {
+        // throw new Error(data.error);
         throw new Error(data.error);
     }
 

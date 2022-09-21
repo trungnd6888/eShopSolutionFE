@@ -28,14 +28,17 @@ function Router(props) {
     const user = useSelector(state => state.auth).current;
     let isExpired = false;
     let isLogin = false;
-    // let roleList = [];
+    let roleList = [];
+    const isRoleClaim = (claimType, claimValue) => {
+        return user[claimType]?.includes(claimValue);
+    };
 
     if (user) {
         const dateNow = new Date();
         if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
 
         isLogin = !isExpired;
-        // roleList = user[STORAGE_USER.ROLE] || [];
+        roleList = user[STORAGE_USER.ROLE] || [];
     }
 
     return useRoutes([
@@ -81,35 +84,35 @@ function Router(props) {
                 { path: "dashboard", element: <Dashboard /> },
                 {
                     path: "product",
-                    element: isLogin ? <Product /> : <NotRole />
+                    element: isLogin && isRoleClaim('product', 'product.view') ? <Product /> : <NotRole />
                 },
                 {
                     path: "user",
-                    element: isLogin ? <User /> : <NotRole />
+                    element: isLogin && isRoleClaim('user', 'user.view') ? <User /> : <NotRole />
                 },
                 {
                     path: "customer",
-                    element: isLogin ? <Customer /> : <NotRole />
+                    element: isLogin && isRoleClaim('customer', 'customer.view') ? <Customer /> : <NotRole />
                 },
                 {
                     path: "category",
-                    element: isLogin ? <Category /> : <NotRole />
+                    element: isLogin && isRoleClaim('category', 'category.view') ? <Category /> : <NotRole />
                 },
                 {
                     path: "distributor",
-                    element: isLogin ? <Distributor /> : <NotRole />
+                    element: isLogin && isRoleClaim('distributor', 'distributor.view') ? <Distributor /> : <NotRole />
                 },
                 {
                     path: "news",
-                    element: isLogin ? <News /> : <NotRole />
+                    element: isLogin && isRoleClaim('news', 'news.view') ? <News /> : <NotRole />
                 },
                 {
                     path: "order",
-                    element: isLogin ? <Order /> : <NotRole />
+                    element: isLogin && isRoleClaim('order', 'order.view') ? <Order /> : <NotRole />
                 },
                 {
                     path: "role",
-                    element: isLogin ? <Role /> : <NotRole />
+                    element: isLogin && isRoleClaim('permission', 'permission.view') ? <Role /> : <NotRole />
                 },
             ]
         },
