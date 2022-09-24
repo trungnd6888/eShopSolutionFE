@@ -1,3 +1,4 @@
+import HistoryIcon from '@mui/icons-material/History';
 import AppsIcon from '@mui/icons-material/Apps';
 import ArtTrackIcon from '@mui/icons-material/ArtTrack';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
@@ -119,6 +120,7 @@ function SideBar({ drawerWidth }) {
                 {[
                     { name: 'Đơn hàng', icon: <DeliveryDiningIcon />, url: 'order' },
                     { name: 'Vai trò', icon: <ManageAccountsIcon />, url: 'role' },
+                    { name: 'Lịch sử', icon: <HistoryIcon />, url: 'history' },
                 ].map((text, index) => (
                     <ListItem
                         disablePadding

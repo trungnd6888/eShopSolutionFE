@@ -19,6 +19,7 @@ import Role from './src/features/Role/pages/Role/Role';
 import Order from './src/features/Order/pages/Order/Order';
 import Product from './src/features/Product/pages/Product/Product';
 import User from './src/features/User/pages/User/User';
+import History from './src/features/History/pages/History/History';
 import DashboardLayout from './src/layouts/DashboardLayout/DashboardLayout';
 Router.propTypes = {
 
@@ -113,6 +114,10 @@ function Router(props) {
                 {
                     path: "role",
                     element: isLogin && isRoleClaim('permission', 'permission.view') ? <Role /> : <NotRole />
+                },
+                {
+                    path: "history",
+                    element: isLogin ? <History /> : <NotRole />
                 },
             ]
         },
