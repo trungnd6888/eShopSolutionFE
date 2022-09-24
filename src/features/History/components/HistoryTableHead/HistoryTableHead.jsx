@@ -8,7 +8,7 @@ import { visuallyHidden } from '@mui/utils';
 import { PropTypes } from 'prop-types';
 import * as React from 'react';
 
-ProductTableHead.propTypes = {
+HistoryTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -19,71 +19,28 @@ ProductTableHead.propTypes = {
 
 const headCells = [
     {
-        id: 'name',
+        id: 'userName',
         numeric: false,
         disablePadding: true,
-        label: 'Tên sản phẩm',
+        label: 'Người dùng',
     },
     {
-        id: 'code',
+        id: 'formName',
         numeric: false,
         disablePadding: false,
-        label: 'Mã',
+        label: 'Phân hệ',
     },
     {
-        id: 'detail',
+        id: 'actionName',
         numeric: false,
         disablePadding: false,
-        label: 'Thông tin',
+        label: 'Thao tác',
     },
     {
-        id: 'imageUrl',
+        id: 'time',
         numeric: false,
         disablePadding: false,
-        label: 'Ảnh',
-    },
-    {
-        id: 'createDate',
-        numeric: false,
-        disablePadding: false,
-        label: 'Ngày tạo',
-    },
-    {
-        id: 'price',
-        numeric: true,
-        disablePadding: false,
-        label: 'Giá',
-    },
-    {
-        id: 'approvedId',
-        numeric: true,
-        disablePadding: false,
-        label: 'Người duyệt',
-    },
-    {
-        id: 'userId',
-        numeric: true,
-        disablePadding: false,
-        label: 'Người tạo',
-    },
-
-    {
-        id: 'isApproved',
-        numeric: false,
-        disablePadding: false,
-        label: 'Đã duyệt',
-    },
-    {
-        id: 'isBestSale',
-        numeric: false,
-        disablePadding: false,
-        label: 'Bán chạy',
-    },
-    {
-        id: 'isNew',
-        numeric: false,
-        disablePadding: false,
-        label: 'Mới',
+        label: 'Thời gian',
     },
     {
         id: 'control',
@@ -93,7 +50,7 @@ const headCells = [
     },
 ];
 
-function ProductTableHead(props) {
+function HistoryTableHead(props) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler = (property) => (event) => {
@@ -139,4 +96,4 @@ function ProductTableHead(props) {
     );
 }
 
-export default ProductTableHead;
+export default HistoryTableHead;
