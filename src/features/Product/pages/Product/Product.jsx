@@ -276,7 +276,7 @@ function Product(props) {
 
     const fetchCategory = async () => {
         try {
-            const data = await categoryApi.getAll();
+            const { data } = await categoryApi.getAll();
             setCategoryList(data);
         } catch (error) {
             console.log('Fail to fetch category list: ', error);
