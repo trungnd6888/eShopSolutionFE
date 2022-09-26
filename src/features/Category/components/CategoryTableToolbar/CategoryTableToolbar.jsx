@@ -1,25 +1,59 @@
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Autocomplete, Button, Grid, TextField, Toolbar, Tooltip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box, Button, Grid, TextField, Toolbar, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
-
+import { PropTypes } from 'prop-types';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
 CategoryTableToolbar.propTypes = {
-
+    onAddOpenClick: PropTypes.func,
+    numSelected: PropTypes.number,
+    onSubmit: PropTypes.func,
+    onRemove: PropTypes.func,
+    onAccept: PropTypes.func,
 };
 
-function CategoryTableToolbar(props) {
-    const { numSelected } = props;
-    const top100Films = [
-        { label: 'The Shawshank Redemption', year: 1994 },
-        { label: 'The Godfather', year: 1972 },
-        { label: 'The Godfather: Part II', year: 1974 },
-        { label: 'The Dark Knight', year: 2008 },
-        { label: '12 Angry Men', year: 1957 },
-        { label: "Schindler's List", year: 1993 },
-        { label: 'Pulp Fiction', year: 1994 },
-    ];
+CategoryTableToolbar.defaultValues = {
+    onAddOpenClick: null,
+    numberSelected: 0,
+    onSubmit: null,
+    onRemove: null,
+    onAccept: null,
+};
+
+function CategoryTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
+    const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
+
+    const { register, handleSubmit, control } = useForm({
+        defaultValues: { keyword: '' },
+    });
+
+    const handleOnSubmit = async (values) => {
+        if (onSubmit) await onSubmit(values);
+    };
+
+    const handleQuestionDialogClose = () => {
+        setOpenQuestionDialog(false);
+    };
+
+    const handleQuestionDialogAccept = () => {
+        if (onAccept) onAccept();
+
+        //close form when remove success
+        handleQuestionDialogClose();
+    };
+
+    const handleRemove = () => {
+        setOpenQuestionDialog(true);
+    };
+
+    const handleClickOpenAdd = () => {
+        if (onAddOpenClick) onAddOpenClick();
+    };
 
     return (
         <Toolbar
@@ -40,18 +74,25 @@ function CategoryTableToolbar(props) {
                         variant="subtitle1"
                         component="div"
                     >
-                        {numSelected} selected
+                        {numSelected} sản phẩm
                     </Typography>
-                    <Tooltip title="Delete">
-                        <IconButton>
+                    <Tooltip title="Xóa">
+                        <IconButton onClick={handleRemove}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
+                    <QuestionDialog
+                        open={openQuestionDialog}
+                        onClose={handleQuestionDialogClose}
+                        onAccept={handleQuestionDialogAccept}
+                        message="Bạn có muốn xóa những bản ghi này"
+                    />
                 </>
             ) : (
-                <Grid container sx={{ pt: 1 }}>
-                    <Grid item xs={12} sm={4} md={4} >
+                <Grid component="form" onSubmit={handleSubmit(handleOnSubmit)} container sx={{ pt: 1 }}>
+                    <Grid item xs={12} sm={5} md={4} >
                         <TextField
+                            {...register('keyword')}
                             fullWidth
                             label="Từ khóa"
                             size="small"
@@ -63,27 +104,15 @@ function CategoryTableToolbar(props) {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={4} md={4} >
-                        <Autocomplete
-                            size="small"
-                            disablePortal
-                            id="combo-box-demo"
-                            options={top100Films}
-                            sx={{
-                                minWidth: 200,
-                                pr: { sm: 2, md: 2 },
-                                pb: 2
-                            }}
-                            renderInput={(params) => <TextField {...params} label="Movie" />}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={4} md={4}>
+
+                    <Grid item xs={12} sm={2} md={2} >
                         <Button
+                            type="submit"
                             title="Tìm kiếm"
                             placement="right"
                             variant="outlined"
                             sx={{
-                                mb: { xs: 4 },
+                                mb: { xs: 2 },
                                 width: {
                                     xs: '100%',
                                     sm: 'auto',
@@ -91,17 +120,44 @@ function CategoryTableToolbar(props) {
                                 },
                                 minWidth: {
                                     xs: 200,
-                                    sm: 'auto',
+                                    sm: 97,
                                     md: 'auto',
                                 }
                             }}
                         >
-                            Tìm kiếm
+                            <SearchIcon sx={{ mb: 0.5 }} fontSize="small" />
+                            Lọc
                         </Button>
                     </Grid>
+                    <Grid item xs={12} sm={5} md={4} ></Grid>
+                    <Grid item xs={12} sm={12} md={2} >
+                        <Box sx={{ pr: { md: 1 }, textAlign: { md: 'right' } }}>
+                            <Button
+                                title="Thêm mới"
+                                placement="right"
+                                variant="contained"
+                                onClick={handleClickOpenAdd}
+                                sx={{
+                                    mb: { xs: 4 },
+                                    width: {
+                                        xs: '100%',
+                                        sm: 'auto',
+                                        md: 'auto',
+                                    },
+                                    minWidth: {
+                                        xs: 200,
+                                        sm: 'auto',
+                                        md: 'auto',
+                                    }
+                                }}
+                            >
+                                <AddIcon sx={{ mb: 0.5 }} fontSize="small" />
+                                Thêm
+                            </Button>
+                        </Box>
+                    </Grid>
                 </Grid>
-            )
-            }
+            )}
         </Toolbar >
     );
 }

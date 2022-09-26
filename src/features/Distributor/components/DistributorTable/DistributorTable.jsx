@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Chip, Menu, MenuItem } from '@mui/material';
+import { Avatar, Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -13,39 +13,29 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
-import { useState } from 'react';
-import ImageProfile from '../../../../../images/profile-image.jpg';
+import { PropTypes } from 'prop-types';
+import React, { useState } from 'react';
+import distributorApi from '../../../../api/distributorApi';
+import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
+import { STORAGE_IMAGE } from '../../../../constants/common';
 import DistributorTableHead from '../DistributorTableHead/DistributorTableHead';
 import DistributorTableToolbar from '../DistributorTableToolbar/DistributorTableToolbar';
 
-function createData(name, calories, fat, carbs, protein, image, status) {
-    return {
-        name,
-        calories,
-        fat,
-        carbs,
-        protein,
-        image,
-        status,
-    };
-}
+DistributorTable.propTypes = {
+    onAddOpenClick: PropTypes.func,
+    distributorList: PropTypes.array,
+    onSubmit: PropTypes.func,
+    onRemoveClick: PropTypes.func,
+    onToolbarRemoveClick: PropTypes.func,
+};
 
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3, ImageProfile, true),
-    createData('Donut', 452, 25.0, 51, 4.9, ImageProfile, true),
-    createData('Eclair', 262, 16.0, 24, 6.0, ImageProfile, true),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, ImageProfile, false),
-    createData('Gingerbread', 356, 16.0, 49, 3.9, ImageProfile, false),
-    createData('Honeycomb', 408, 3.2, 87, 6.5, ImageProfile, true),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, ImageProfile, false),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0, ImageProfile, false),
-    createData('KitKat', 518, 26.0, 65, 7.0, ImageProfile, true),
-    createData('Lollipop', 392, 0.2, 98, 0.0, ImageProfile, false),
-    createData('Marshmallow', 318, 0, 81, 2.0, ImageProfile, true),
-    createData('Nougat', 360, 19.0, 9, 37.0, ImageProfile, false),
-    createData('Oreo', 437, 18.0, 63, 4.0, ImageProfile, false),
-];
+DistributorTable.defaultValues = {
+    onAddOpenClick: null,
+    distributorList: [],
+    onSubmit: null,
+    onRemoveClick: null,
+    onToolbarRemoveClick: null,
+};
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -77,14 +67,34 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function DistributorTable() {
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+function DistributorTable({
+    distributorList,
+    onSubmit,
+    onAddOpenClick,
+    onRemoveClick,
+    onToolbarRemoveClick,
+}) {
+    const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 5 });
+    const { page, rowsPerPage } = pagination;
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('createDate');
+    const [selected, setSelected] = useState([]);
     const [controlAnchorEl, setControlAnchorEl] = useState(null);
+    const [distributor, setDistributor] = useState(null);
+    const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
     const open = Boolean(controlAnchorEl);
+
+    function createData(name, id) {
+        return {
+            name,
+            id,
+        };
+    }
+
+    const rows = distributorList.map(distributor => createData(
+        distributor.name,
+        distributor.id,
+    ));
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -94,19 +104,19 @@ function DistributorTable() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = rows.map((n) => n.id);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleCheckboxClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -118,29 +128,81 @@ function DistributorTable() {
             );
         }
 
-
         setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setPagination(pre => ({ ...pre, page: newPage }));
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+        setPagination(pre => ({
+            ...pre,
+            rowsPerPage: parseInt(event.target.value, 10),
+            page: 0,
+        }))
     };
 
-    const handleControlClick = (event) => {
+    const handleControlOpen = async (event) => {
         event.stopPropagation();
         setControlAnchorEl(event.currentTarget);
+
+        const distributorId = event.currentTarget?.dataset.id
+        if (!distributorId) return;
+
+        try {
+            const data = await distributorApi.getById(distributorId);
+            if (data) setDistributor(data);
+        } catch (error) {
+            console.log('Fail to fetch distributor by id', error);
+        }
     };
 
     const handleControlClose = () => {
         setControlAnchorEl(null);
+        setDistributor(null);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const handleSearchSubmit = async (values) => {
+        if (onSubmit) await onSubmit(values);
+        setPagination({ page: 0, rowsPerPage: 5 });
+    };
+
+    const handleAddOpen = (event) => {
+        if (onAddOpenClick) onAddOpenClick(distributor);
+
+        //close form control 
+        handleControlClose();
+    };
+
+    const handleQuestionDialogOpen = () => {
+        setOpenQuestionDialog(true);
+    };
+
+    const handleQuestionDialogClose = () => {
+        setOpenQuestionDialog(false);
+    };
+
+    const handleAcceptRemove = () => {
+        const distributorId = distributor.id;
+        if (onRemoveClick) onRemoveClick(distributorId);
+
+        //close form when remove success  
+        handleQuestionDialogClose();
+        handleControlClose();
+    };
+
+    const handleToolbarAcceptRemove = () => {
+        if (onToolbarRemoveClick) onToolbarRemoveClick(selected);
+
+        setSelected([]);
+    };
+
+    const setImageUrlRow = (path) => {
+        return path ? `https://localhost:7095${path}` : STORAGE_IMAGE.PRODUCT_THUMBNAI;
+    }
+
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -149,7 +211,12 @@ function DistributorTable() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <DistributorTableToolbar numSelected={selected.length} />
+                <DistributorTableToolbar
+                    onAddOpenClick={handleAddOpen}
+                    numSelected={selected.length}
+                    onSubmit={handleSearchSubmit}
+                    onAccept={handleToolbarAcceptRemove}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -169,7 +236,7 @@ function DistributorTable() {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -178,12 +245,12 @@ function DistributorTable() {
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row.id + row.name}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
-                                                    onClick={(event) => handleClick(event, row.name)}
+                                                    onClick={(event) => handleCheckboxClick(event, row.id)}
                                                     color="primary"
                                                     checked={isItemSelected}
                                                     inputProps={{
@@ -199,23 +266,8 @@ function DistributorTable() {
                                             >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell align="right">{row.calories}</TableCell>
-                                            <TableCell align="right">{row.fat}</TableCell>
-                                            <TableCell align="right">{row.carbs}</TableCell>
-                                            <TableCell align="right">{row.protein}</TableCell>
-                                            <TableCell align="left">
-                                                <Avatar variant='square' src={row.image} sx={{ width: 50, height: 50, borderRadius: 1 }} />
-                                            </TableCell>
-                                            <TableCell align='left'>
-                                                <Chip
-                                                    label={row.status ? 'Active' : 'Disable'}
-                                                    size="small"
-                                                    color={row.status ? 'success' : 'error'}
-                                                    sx={{ fontWeight: '500' }}
-                                                />
-                                            </TableCell>
                                             <TableCell>
-                                                <IconButton onClick={handleControlClick}>
+                                                <IconButton data-id={row.id} onClick={handleControlOpen}>
                                                     <MoreVertIcon />
                                                 </IconButton>
                                             </TableCell>
@@ -228,6 +280,27 @@ function DistributorTable() {
                                 </TableRow>
                             )}
                         </TableBody>
+                        <Menu
+                            onClose={handleControlClose}
+                            open={open}
+                            anchorEl={controlAnchorEl}
+                            elevation={1}
+                        >
+                            <MenuItem sx={{ pr: 3 }} onClick={handleAddOpen}>
+                                <ModeEditIcon sx={{ pb: 0.5 }} />
+                                <Typography variant="subtitle2">Sửa</Typography>
+                            </MenuItem>
+                            <MenuItem sx={{ pr: 3 }} onClick={handleQuestionDialogOpen}>
+                                <DeleteOutlineIcon sx={{ pb: 0.5 }} />
+                                <Typography variant="subtitle2">Xóa</Typography>
+                            </MenuItem>
+                        </Menu>
+                        <QuestionDialog
+                            open={openQuestionDialog}
+                            onClose={handleQuestionDialogClose}
+                            onAccept={handleAcceptRemove}
+                            message="Bạn muốn xóa bản ghi này không ?"
+                        />
                     </Table>
                 </TableContainer>
                 <TablePagination
@@ -239,23 +312,8 @@ function DistributorTable() {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-                <Menu
-                    onClose={handleControlClose}
-                    open={open}
-                    anchorEl={controlAnchorEl}
-                    elevation={1}
-                >
-                    <MenuItem sx={{ pr: 3 }}>
-                        <ModeEditIcon sx={{ pb: 0.5 }} />
-                        <Typography variant="subtitle2" >Sửa</Typography>
-                    </MenuItem>
-                    <MenuItem sx={{ pr: 3 }}>
-                        <DeleteOutlineIcon sx={{ pb: 0.5 }} />
-                        <Typography variant="subtitle2">Xóa</Typography>
-                    </MenuItem>
-                </Menu>
             </Paper>
-        </Box>
+        </Box >
     );
 }
 
