@@ -8,7 +8,7 @@ import { visuallyHidden } from '@mui/utils';
 import { PropTypes } from 'prop-types';
 import * as React from 'react';
 
-CustomerTableHead.propTypes = {
+BannerTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
@@ -19,40 +19,34 @@ CustomerTableHead.propTypes = {
 
 const headCells = [
   {
-    id: 'name',
+    id: 'title',
     numeric: false,
     disablePadding: true,
-    label: 'Tên khách',
+    label: 'Tiêu đề',
   },
   {
-    id: 'birthday',
+    id: 'summary',
     numeric: false,
     disablePadding: false,
-    label: 'Ngày sinh',
+    label: 'Tóm tắt',
   },
   {
     id: 'imageUrl',
     numeric: false,
     disablePadding: false,
-    label: 'Hình ảnh',
+    label: 'Ảnh',
   },
   {
-    id: 'address',
+    id: 'isApproved',
     numeric: false,
     disablePadding: false,
-    label: 'Địa chỉ',
+    label: 'Duyệt',
   },
   {
-    id: 'tel',
+    id: 'order',
     numeric: false,
     disablePadding: false,
-    label: 'Điện thoại',
-  },
-  {
-    id: 'email',
-    numeric: false,
-    disablePadding: false,
-    label: 'Email',
+    label: 'Thứ tự',
   },
   {
     id: 'control',
@@ -62,7 +56,7 @@ const headCells = [
   },
 ];
 
-function CustomerTableHead(props) {
+function BannerTableHead(props) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -107,4 +101,4 @@ function CustomerTableHead(props) {
   );
 }
 
-export default CustomerTableHead;
+export default BannerTableHead;

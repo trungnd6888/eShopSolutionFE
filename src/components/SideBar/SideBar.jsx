@@ -1,3 +1,4 @@
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import HistoryIcon from '@mui/icons-material/History';
 import AppsIcon from '@mui/icons-material/Apps';
 import ArtTrackIcon from '@mui/icons-material/ArtTrack';
@@ -26,157 +27,172 @@ import { STORAGE_IMAGE, STORAGE_USER } from '../../constants/common';
 import { openDrawer } from '../../layouts/drawerSlice';
 
 SideBar.propTypes = {
-    drawerWidth: PropTypes.number,
+  drawerWidth: PropTypes.number,
 };
 
 SideBar.defaultValues = {
-    drawerWidth: 0,
+  drawerWidth: 0,
 };
 
 const activeStyle = {
-    textDecoration: 'underline',
+  textDecoration: 'underline',
 };
 
 function SideBar({ drawerWidth }) {
-    const theme = useTheme();
-    const drawer = useSelector(state => state.drawer);
-    const dispatch = useDispatch();
+  const theme = useTheme();
+  const drawer = useSelector((state) => state.drawer);
+  const dispatch = useDispatch();
 
-    const user = useSelector(state => state.auth).current;
-    const fullName = user[STORAGE_USER.FULLNAME];
-    const avatarImageUrl = user[STORAGE_USER.AVATAR_IMAGE_URL];
+  const user = useSelector((state) => state.auth).current;
+  const fullName = user[STORAGE_USER.FULLNAME];
+  const avatarImageUrl = user[STORAGE_USER.AVATAR_IMAGE_URL];
 
-    const drawerBox = (
-        <Box
-            sx={{ width: 239 }}
-            role="presentation"
-        >
-            <Toolbar sx={{
-                m: 2,
-                justifyContent: 'space-around',
-                backgroundColor: theme.palette.action.hover,
-                borderRadius: '12px'
-            }}>
-                <Avatar
-                    alt='profile-image'
-                    src={avatarImageUrl ? `https://localhost:7095${avatarImageUrl}` : STORAGE_IMAGE.AVATAR_THUMBNAI}
-                    sx={{
-                        width: 36,
-                        height: 36,
-                    }}
-                >
-                </Avatar>
-                <Typography sx={{ textAlign: 'center' }}>{fullName}</Typography>
-            </Toolbar>
+  const drawerBox = (
+    <Box sx={{ width: 239 }} role="presentation">
+      <Toolbar
+        sx={{
+          m: 2,
+          justifyContent: 'space-around',
+          backgroundColor: theme.palette.action.hover,
+          borderRadius: '12px',
+        }}
+      >
+        <Avatar
+          alt="profile-image"
+          src={
+            avatarImageUrl
+              ? `https://localhost:7095${avatarImageUrl}`
+              : STORAGE_IMAGE.AVATAR_THUMBNAI
+          }
+          sx={{
+            width: 36,
+            height: 36,
+          }}
+        ></Avatar>
+        <Typography sx={{ textAlign: 'center' }}>{fullName}</Typography>
+      </Toolbar>
 
-            <List>
-                {[
-                    { name: 'Tổng quan', icon: <AppsIcon />, url: 'dashboard' },
-                ].map((text, index) => (
-
-                    <ListItem
-                        style={({ isActive }) => isActive ? activeStyle : undefined}
-                        component={NavLink}
-                        to={text.url}
-                        key={text.name[0] + index}
-                        disablePadding
-                        sx={{ color: 'inherit' }}
-                    >
-                        <ListItemButton>
-                            <ListItemIcon>{text.icon}</ListItemIcon>
-                            <ListItemText primary={text.name} />
-                        </ListItemButton>
-                    </ListItem>
-
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {[
-                    { name: 'Sản phẩm', icon: <TouchAppIcon />, url: 'product' },
-                    { name: 'Bộ sưu tập', icon: <ArtTrackIcon />, url: 'category' },
-                    { name: 'Tin tức', icon: <LanguageIcon />, url: 'news' },
-                    { name: 'Người dùng', icon: <CoPresentIcon />, url: 'user' },
-                    { name: 'Khách hàng', icon: <AssignmentIndIcon />, url: 'customer' },
-                    { name: 'Nhà cung cấp', icon: <FestivalIcon />, url: 'distributor' },
-                ].map((text, index) => (
-                    <ListItem
-                        disablePadding
-                        to={text.url}
-                        component={NavLink}
-                        sx={{ color: 'inherit' }}
-                        key={text.name[0] + index}
-                        style={({ isActive }) => isActive ? activeStyle : undefined}
-                    >
-                        <ListItemButton>
-                            <ListItemIcon>{text.icon}</ListItemIcon>
-                            <ListItemText primary={text.name} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {[
-                    { name: 'Đơn hàng', icon: <DeliveryDiningIcon />, url: 'order' },
-                    { name: 'Vai trò', icon: <ManageAccountsIcon />, url: 'role' },
-                    { name: 'Lịch sử', icon: <HistoryIcon />, url: 'history' },
-                ].map((text, index) => (
-                    <ListItem
-                        disablePadding
-                        to={text.url}
-                        component={NavLink}
-                        sx={{ color: 'inherit' }}
-                        key={text.name[0] + index}
-                        style={({ isActive }) => isActive ? activeStyle : undefined}
-                    >
-                        <ListItemButton>
-                            <ListItemIcon> {text.icon} </ListItemIcon>
-                            <ListItemText primary={text.name} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box >
-    );
-
-    const handleDrawerToggle = () => {
-        const action = openDrawer(!drawer);
-        dispatch(action);
-    };
-
-    return (
-        <Box
-            component="nav"
-            sx={{ width: { lg: drawerWidth }, flexShrink: { lg: 0 } }}
-        >
-            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Drawer
-                variant="temporary"
-                open={drawer}
-                onClose={handleDrawerToggle}
-                ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
-                }}
-                sx={{
-                    display: { xs: 'block', lg: 'none' },
-                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                }}
+      <List>
+        {[{ name: 'Tổng quan', icon: <AppsIcon />, url: 'dashboard' }].map((text, index) => (
+          <ListItem
+            style={({ isActive }) => (isActive ? activeStyle : undefined)}
+            component={NavLink}
+            to={text.url}
+            key={text.name[0] + index}
+            disablePadding
+            sx={{ color: 'inherit' }}
+          >
+            <ListItemButton>
+              <ListItemIcon>{text.icon}</ListItemIcon>
+              <ListItemText primary={text.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {[
+          { name: 'Sản phẩm', icon: <TouchAppIcon />, url: 'product' },
+          { name: 'Bộ sưu tập', icon: <ArtTrackIcon />, url: 'category' },
+          { name: 'Tin tức', icon: <LanguageIcon />, url: 'news' },
+          { name: 'Người dùng', icon: <CoPresentIcon />, url: 'user' },
+          { name: 'Khách hàng', icon: <AssignmentIndIcon />, url: 'customer' },
+          { name: 'Nhà cung cấp', icon: <FestivalIcon />, url: 'distributor' },
+        ].map((text, index) => (
+          <ListItem
+            disablePadding
+            to={text.url}
+            component={NavLink}
+            sx={{ color: 'inherit' }}
+            key={text.name[0] + index}
+            style={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
+            <ListItemButton>
+              <ListItemIcon>{text.icon}</ListItemIcon>
+              <ListItemText primary={text.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {[
+          { name: 'Đơn hàng', icon: <DeliveryDiningIcon />, url: 'order' },
+          { name: 'Vai trò', icon: <ManageAccountsIcon />, url: 'role' },
+          { name: 'Lịch sử', icon: <HistoryIcon />, url: 'history' },
+        ].map((text, index) => (
+          <ListItem
+            disablePadding
+            to={text.url}
+            component={NavLink}
+            sx={{ color: 'inherit' }}
+            key={text.name[0] + index}
+            style={({ isActive }) => (isActive ? activeStyle : undefined)}
+          >
+            <ListItemButton>
+              <ListItemIcon> {text.icon} </ListItemIcon>
+              <ListItemText primary={text.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {[{ name: 'Ảnh bìa', icon: <AutoAwesomeMosaicIcon />, url: 'banner' }].map(
+          (text, index) => (
+            <ListItem
+              disablePadding
+              to={text.url}
+              component={NavLink}
+              sx={{ color: 'inherit' }}
+              key={text.name[0] + index}
+              style={({ isActive }) => (isActive ? activeStyle : undefined)}
             >
-                {drawerBox}
-            </Drawer>
-            <Drawer
-                variant="permanent"
-                sx={{
-                    display: { xs: 'none', lg: 'block' },
-                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                }}
-                open
-            >
-                {drawerBox}
-            </Drawer>
-        </Box>
-    );
+              <ListItemButton>
+                <ListItemIcon> {text.icon} </ListItemIcon>
+                <ListItemText primary={text.name} />
+              </ListItemButton>
+            </ListItem>
+          )
+        )}
+      </List>
+    </Box>
+  );
+
+  const handleDrawerToggle = () => {
+    const action = openDrawer(!drawer);
+    dispatch(action);
+  };
+
+  return (
+    <Box component="nav" sx={{ width: { lg: drawerWidth }, flexShrink: { lg: 0 } }}>
+      {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+      <Drawer
+        variant="temporary"
+        open={drawer}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: 'block', lg: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+      >
+        {drawerBox}
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', lg: 'block' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+        open
+      >
+        {drawerBox}
+      </Drawer>
+    </Box>
+  );
 }
 
 export default SideBar;

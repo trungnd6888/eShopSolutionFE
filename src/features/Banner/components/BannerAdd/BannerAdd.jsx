@@ -1,6 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
-import { Autocomplete, Stack, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -56,48 +64,44 @@ CustomizeDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-UserAdd.propTypes = {
-  user: PropTypes.object,
+BannerAdd.propTypes = {
+  banner: PropTypes.object,
   open: PropTypes.bool,
   onSubmit: PropTypes.func,
   onClose: PropTypes.func,
-  roleList: PropTypes.array,
 };
 
-UserAdd.defaultValues = {
-  user: null,
+BannerAdd.defaultValues = {
+  banner: null,
   open: false,
   onSubmit: null,
   onClose: null,
-  roleList: [],
 };
 
-function UserAdd({ onClose, onSubmit, open, user, roleList }) {
-  const isUpdate = Boolean(user) || false;
+function BannerAdd({ onClose, onSubmit, open, banner }) {
+  const isUpdate = Boolean(banner) || false;
   const initialValues = {
-    userName: '',
-    fullName: '',
-    email: '',
-    phoneNumber: '',
-    avatarImage: [],
+    title: '',
+    summary: '',
+    thumbnailImage: [],
     inputHidden: '',
-    roles: [],
+    isApproved: false,
+    order: 0,
   };
   const resetValues = {
-    userName: isUpdate ? user.userName : '',
-    fullName: isUpdate ? user.fullName : '',
-    email: isUpdate ? user.email : '',
-    phoneNumber: isUpdate ? user.phoneNumber : '',
-    avatarImage: [],
-    inputHidden: isUpdate ? user.avatarImage || '' : '',
-    roles: isUpdate ? roleList.filter((x) => user.userRoles.includes(x.id)) : [],
+    title: isUpdate ? banner.title : '',
+    summary: isUpdate ? banner.summary : '',
+    thumbnailImage: [],
+    inputHidden: isUpdate ? banner.imageUrl : '',
+    isApproved: isUpdate ? banner.isApproved : false,
+    order: isUpdate ? banner.order : 0,
   };
 
   const schema = yup.object().shape({
-    userName: yup.string().required('Vui lòng nhập tên đăng nhập'),
-    fullName: yup.string().required('Vui lòng nhập họ tên'),
-    email: yup.string().required('Vui lòng nhập email'),
-    phoneNumber: yup.string(),
+    title: yup.string().required('Vui lòng nhập tiêu đề'),
+    summary: yup.string(),
+    isApproved: yup.bool(),
+    order: yup.number(),
   });
 
   const { handleSubmit, control, reset, formState, resetField, setValue, register } = useForm({
@@ -143,7 +147,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
 
   useEffect(() => {
     handleFormReset(resetValues);
-  }, [user]);
+  }, [banner]);
 
   return (
     <CustomizeDialog
@@ -161,7 +165,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="userName"
+                  name="title"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -169,8 +173,8 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="userName"
-                      label="Tên đăng nhập *"
+                      id="title"
+                      label="Tiêu đề *"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -181,7 +185,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="fullName"
+                  name="summary"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -189,8 +193,8 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="fullName"
-                      label="Họ tên *"
+                      id="summary"
+                      label="Tóm tắt"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -201,7 +205,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="email"
+                  name="order"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -209,57 +213,13 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="email"
-                      label="Email *"
+                      id="order"
+                      type="number"
+                      label="Thứ tự"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
                       helperText={errors[name]?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({ field: { name, value, onChange } }) => (
-                    <TextField
-                      name={name}
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      id="phoneNumber"
-                      label="Điện thoại"
-                      size="small"
-                      variant="standard"
-                      error={!!errors.name}
-                      helperText={errors?.name?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="roles"
-                  control={control}
-                  render={({ field: { name, onChange, value } }) => (
-                    <Autocomplete
-                      name={name}
-                      value={value}
-                      onChange={(event, data) => {
-                        onChange(data);
-                      }}
-                      multiple
-                      size="small"
-                      id="roles"
-                      options={roleList}
-                      getOptionLabel={(option) => option.name}
-                      isOptionEqualToValue={(option, value) => option.id === value.id}
-                      filterSelectedOptions
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" label="Vai trò" />
-                      )}
                     />
                   )}
                 />
@@ -268,12 +228,11 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                 <Typography sx={{ mb: 2 }}> Hình ảnh</Typography>
                 <Stack direction="row" sx={{ flexWrap: 'wrap' }}>
                   <CustomizeFileUpload
-                    initImageUrl={getUrlImage(user?.avatarImage)}
-                    defaultImageUrl={STORAGE_IMAGE.AVATAR_THUMBNAI}
-                    title="Ảnh đại diện"
-                    {...register('avatarImage')}
+                    initImageUrl={getUrlImage(banner?.imageUrl)}
+                    defaultImageUrl={STORAGE_IMAGE.PRODUCT_THUMBNAI}
+                    {...register('thumbnailImage')}
                     onClose={() => {
-                      handleFileUploadClose('avatarImage', 'inputHidden');
+                      handleFileUploadClose('thumbnailImage', 'inputHidden');
                     }}
                   />
 
@@ -292,6 +251,22 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                   />
                 </Stack>
               </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <FormGroup sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name="isApproved"
+                        control={control}
+                        render={({ field: { name, value, onChange } }) => (
+                          <Checkbox name={name} onChange={onChange} checked={value} size="small" />
+                        )}
+                      />
+                    }
+                    label="Hiển thị"
+                  />
+                </FormGroup>
+              </Grid>
             </Grid>
           </Container>
         </DialogContent>
@@ -308,4 +283,4 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
   );
 }
 
-export default UserAdd;
+export default BannerAdd;

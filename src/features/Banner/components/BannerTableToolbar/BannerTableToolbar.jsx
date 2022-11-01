@@ -9,7 +9,7 @@ import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-CustomerTableToolbar.propTypes = {
+BannerTableToolbar.propTypes = {
   onAddOpenClick: PropTypes.func,
   numSelected: PropTypes.number,
   onSubmit: PropTypes.func,
@@ -17,7 +17,7 @@ CustomerTableToolbar.propTypes = {
   onAccept: PropTypes.func,
 };
 
-CustomerTableToolbar.defaultValues = {
+BannerTableToolbar.defaultValues = {
   onAddOpenClick: null,
   numberSelected: 0,
   onSubmit: null,
@@ -25,7 +25,7 @@ CustomerTableToolbar.defaultValues = {
   onAccept: null,
 };
 
-function CustomerTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
+function BannerTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
   const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
 
   const { register, handleSubmit, control } = useForm({
@@ -157,4 +157,4 @@ function CustomerTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept 
   );
 }
 
-export default CustomerTableToolbar;
+export default BannerTableToolbar;
