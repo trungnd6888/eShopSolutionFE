@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Button, Chip, Menu, MenuItem } from '@mui/material';
+import { Avatar, Chip, Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -13,30 +13,25 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import moment from 'moment';
 import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import productApi from '../../../../api/productApi';
+import bannerApi from '../../../../api/bannerApi';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-import { formatter, STORAGE_IMAGE } from '../../../../constants/common';
-import ProductTableHead from '../ProductTableHead/ProductTableHead';
-import ProductTableToolbar from '../ProductTableToolbar/ProductTableToolbar';
-import { open } from '../../../Auth/snackbarSlice';
+import { STORAGE_IMAGE } from '../../../../constants/common';
+import BannerTableHead from '../BannerTableHead/BannerTableHead';
+import BannerTableToolbar from '../BannerTableToolbar/BannerTableToolbar';
 
-ProductTable.propTypes = {
+BannerTable.propTypes = {
   onAddOpenClick: PropTypes.func,
-  productList: PropTypes.array,
-  categoryList: PropTypes.array,
+  bannerList: PropTypes.array,
   onSubmit: PropTypes.func,
   onRemoveClick: PropTypes.func,
   onToolbarRemoveClick: PropTypes.func,
 };
 
-ProductTable.defaultValues = {
+BannerTable.defaultValues = {
   onAddOpenClick: null,
-  productList: [],
-  categoryList: [],
+  bannerList: [],
   onSubmit: null,
   onRemoveClick: null,
   onToolbarRemoveClick: null,
@@ -72,9 +67,8 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function ProductTable({
-  productList,
-  categoryList,
+function BannerTable({
+  bannerList,
   onSubmit,
   onAddOpenClick,
   onRemoveClick,
@@ -86,74 +80,29 @@ function ProductTable({
   const [orderBy, setOrderBy] = useState('createDate');
   const [selected, setSelected] = useState([]);
   const [controlAnchorEl, setControlAnchorEl] = useState(null);
-  const [product, setProduct] = useState(null);
+  const [banner, setBanner] = useState(null);
   const [openQuestionDialog, setOpenQuestionDialog] = useState(false);
-  const openAnchorEl = Boolean(controlAnchorEl);
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth).current;
-  //Authorize
-  const checkLogin = (user) => {
-    if (!user) return false;
+  const open = Boolean(controlAnchorEl);
 
-    let isExpired = false;
-    const dateNow = new Date();
-    if (user.exp * 1000 < dateNow.getTime()) isExpired = true;
-
-    return !isExpired;
-  };
-
-  const isLogin = checkLogin(user);
-
-  const checkRoleClaim = (claimType, claimValue) => {
-    return user[claimType]?.includes(claimValue);
-  };
-
-  const isRemoveRole = checkRoleClaim('product', 'product.remove');
-
-  function createData(
-    name,
-    code,
-    detail,
-    images,
-    createDate,
-    isApproved,
-    isBestSale,
-    isNew,
-    price,
-    approvedName,
-    userName,
-    id
-  ) {
+  function createData(title, summary, imageUrl, isApproved, order, id) {
     return {
-      name,
-      code,
-      detail,
-      images,
-      createDate,
+      title,
+      summary,
+      imageUrl,
       isApproved,
-      isBestSale,
-      isNew,
-      price,
-      approvedName,
-      userName,
+      order,
       id,
     };
   }
 
-  const rows = productList.map((product) =>
+  const rows = bannerList.map((banner) =>
     createData(
-      product.name,
-      product.code,
-      product.detail,
-      product.images,
-      product.createDate,
-      product.isApproved,
-      product.isBestSale,
-      product.isNew,
-      product.price,
-      product.approvedName,
-      product.userName,
-      product.id
+      banner.title,
+      banner.summary,
+      banner.imageUrl,
+      banner.isApproved,
+      banner.order,
+      banner.id
     )
   );
 
@@ -208,20 +157,20 @@ function ProductTable({
     event.stopPropagation();
     setControlAnchorEl(event.currentTarget);
 
-    const productId = event.currentTarget?.dataset.id;
-    if (!productId) return;
+    const bannerId = event.currentTarget?.dataset.id;
+    if (!bannerId) return;
 
     try {
-      const data = await productApi.getById(productId);
-      if (data) setProduct(data);
+      const data = await bannerApi.getById(bannerId);
+      if (data) setBanner(data);
     } catch (error) {
-      console.log('Fail to fetch product by id', error);
+      console.log('Fail to fetch banner by id', error);
     }
   };
 
   const handleControlClose = () => {
     setControlAnchorEl(null);
-    setProduct(null);
+    setBanner(null);
   };
 
   const handleSearchSubmit = async (values) => {
@@ -230,24 +179,13 @@ function ProductTable({
   };
 
   const handleAddOpen = (event) => {
-    if (onAddOpenClick) onAddOpenClick(product);
+    if (onAddOpenClick) onAddOpenClick(banner);
 
     //close form control
     handleControlClose();
   };
 
   const handleQuestionDialogOpen = () => {
-    if (!isLogin || !isRemoveRole) {
-      const actionSnackbar = open({
-        status: true,
-        message: 'Không có quyền truy cập chức năng này',
-        type: 'error',
-      });
-      dispatch(actionSnackbar);
-
-      return;
-    }
-
     setOpenQuestionDialog(true);
   };
 
@@ -256,8 +194,8 @@ function ProductTable({
   };
 
   const handleAcceptRemove = () => {
-    const productId = product.id;
-    if (onRemoveClick) onRemoveClick(productId);
+    const bannerId = banner.id;
+    if (onRemoveClick) onRemoveClick(bannerId);
 
     //close form when remove success
     handleQuestionDialogClose();
@@ -271,13 +209,7 @@ function ProductTable({
   };
 
   const setImageUrlRow = (row) => {
-    const images = row.images;
-    if (!images) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
-
-    const image = images.find((x) => x.sortOrder === 0);
-    if (!image) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
-
-    const url = image.imageUrl;
+    const url = row.imageUrl;
     if (!url) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
 
     const path = `https://localhost:7095${url}`;
@@ -292,16 +224,15 @@ function ProductTable({
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <ProductTableToolbar
+        <BannerTableToolbar
           onAddOpenClick={handleAddOpen}
           numSelected={selected.length}
-          categoryList={categoryList}
           onSubmit={handleSearchSubmit}
           onAccept={handleToolbarAcceptRemove}
         />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <ProductTableHead
+            <BannerTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -324,7 +255,7 @@ function ProductTable({
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id + row.code}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -338,10 +269,9 @@ function ProductTable({
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
+                        {row.title}
                       </TableCell>
-                      <TableCell align="left">{row.code}</TableCell>
-                      <TableCell align="right">{row.detail}</TableCell>
+                      <TableCell alight="left">{row.summary}</TableCell>
                       <TableCell align="left">
                         <Avatar
                           variant="square"
@@ -350,12 +280,6 @@ function ProductTable({
                         />
                       </TableCell>
                       <TableCell align="left">
-                        {moment(row.createDate).format('DD/MM/YYYY')}
-                      </TableCell>
-                      <TableCell align="left">{formatter.format(row.price)}</TableCell>
-                      <TableCell align="left">{row.approvedName}</TableCell>
-                      <TableCell align="left">{row.userName}</TableCell>
-                      <TableCell align="left">
                         <Chip
                           label={row.isApproved ? 'Duyệt' : 'Đóng'}
                           size="small"
@@ -363,22 +287,7 @@ function ProductTable({
                           sx={{ fontWeight: '500' }}
                         />
                       </TableCell>
-                      <TableCell align="left">
-                        <Chip
-                          label={row.isBestSale ? 'Duyệt' : 'Đóng'}
-                          size="small"
-                          color={row.isBestSale ? 'success' : 'error'}
-                          sx={{ fontWeight: '500' }}
-                        />
-                      </TableCell>
-                      <TableCell align="left">
-                        <Chip
-                          label={row.isNew ? 'Duyệt' : 'Đóng'}
-                          size="small"
-                          color={row.isNew ? 'success' : 'error'}
-                          sx={{ fontWeight: '500' }}
-                        />
-                      </TableCell>
+                      <TableCell alight="left">{row.order}</TableCell>
                       <TableCell>
                         <IconButton data-id={row.id} onClick={handleControlOpen}>
                           <MoreVertIcon />
@@ -393,12 +302,7 @@ function ProductTable({
                 </TableRow>
               )}
             </TableBody>
-            <Menu
-              onClose={handleControlClose}
-              open={openAnchorEl}
-              anchorEl={controlAnchorEl}
-              elevation={1}
-            >
+            <Menu onClose={handleControlClose} open={open} anchorEl={controlAnchorEl} elevation={1}>
               <MenuItem sx={{ pr: 3 }} onClick={handleAddOpen}>
                 <ModeEditIcon sx={{ pb: 0.5 }} />
                 <Typography variant="subtitle2">Sửa</Typography>
@@ -430,4 +334,4 @@ function ProductTable({
   );
 }
 
-export default ProductTable;
+export default BannerTable;
