@@ -1,35 +1,35 @@
 import { Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import customerApi from '../../../../api/customerApi';
+import bannerApi from '../../../../api/bannerApi';
 import { open } from '../../../Auth/snackbarSlice';
-import CustomerAdd from '../../components/CustomerAdd/CustomerAdd';
-import CustomerTable from '../../components/CustomerTable/CustomerTable';
+import BannerAdd from '../../components/BannerAdd/BannerAdd';
+import BannerTable from '../../components/BannerTable/BannerTable';
 
-Customer.propTypes = {};
+Banner.propTypes = {};
 
-function Customer(props) {
-  const [customerList, setCustomerList] = useState([]);
-  const [customerToAdd, setCustomerToAdd] = useState(null);
+function Banner(props) {
+  const [bannerList, setBannerList] = useState([]);
+  const [bannerToAdd, setBannerToAdd] = useState(null);
   const [openAdd, setOpenAdd] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchCustomer();
+    fetchBanner();
   }, []);
 
   const handleSearchSubmit = async (values) => {
-    await fetchCustomer(values);
+    await fetchBanner(values);
   };
 
-  const handleClickOpenAdd = (customer) => {
+  const handleClickOpenAdd = (banner) => {
     setOpenAdd(true);
-    setCustomerToAdd(customer);
+    setBannerToAdd(banner);
   };
 
-  const handleRemoveClick = async (customerId) => {
+  const handleRemoveClick = async (bannerId) => {
     try {
-      await customerApi.remove(customerId);
+      await bannerApi.remove(bannerId);
 
       const actionSnackbar = open({
         status: true,
@@ -39,31 +39,31 @@ function Customer(props) {
       dispatch(actionSnackbar);
 
       setTimeout(() => {
-        fetchCustomer();
+        fetchBanner();
       }, 500);
     } catch (error) {
-      console.log('Fail to remove customer: ', error);
+      console.log('Fail to remove banner: ', error);
     }
   };
 
   const handleToolbarRemoveClick = (selected) => {
     try {
       selected.forEach(async (id) => {
-        await customerApi.remove(id);
+        await bannerApi.remove(id);
       });
 
       const actionSnackbar = open({
         status: true,
-        message: 'Xoá khách hàng thành công',
+        message: 'Xoá ảnh bìa thành công',
         type: 'success',
       });
       dispatch(actionSnackbar);
 
       setTimeout(() => {
-        fetchCustomer();
+        fetchBanner();
       }, 500);
     } catch (error) {
-      console.log('Fail to remove customer: ', error);
+      console.log('Fail to remove banner: ', error);
     }
   };
 
@@ -71,7 +71,7 @@ function Customer(props) {
     setOpenAdd(false);
 
     setTimeout(() => {
-      setCustomerToAdd(null);
+      setBannerToAdd(null);
     }, 300);
   };
 
@@ -120,15 +120,15 @@ function Customer(props) {
       }
     }
 
-    const isUpdate = Boolean(customerToAdd) || false;
+    const isUpdate = Boolean(bannerToAdd) || false;
 
     if (isUpdate) {
       try {
-        await customerApi.updateFormData(customerToAdd.id, updateFormData);
+        await bannerApi.updateFormData(bannerToAdd.id, updateFormData);
 
         const actionSnackbar = open({
           status: true,
-          message: 'Cập nhật khách hàng thành công',
+          message: 'Cập nhật ảnh bìa thành công',
           type: 'success',
         });
         dispatch(actionSnackbar);
@@ -139,23 +139,23 @@ function Customer(props) {
 
         setTimeout(() => {
           handleResetFormAdd();
-          fetchCustomer();
+          fetchBanner();
         }, 1500);
       } catch (error) {
         const actionSnackbar = open({
           status: true,
-          message: 'Cập nhật khách hàng không thành công',
+          message: 'Cập nhật ảnh bìa không thành công',
           type: 'error',
         });
         dispatch(actionSnackbar);
       }
     } else {
       try {
-        await customerApi.addFormData(addFormData);
+        await bannerApi.addFormData(addFormData);
 
         const actionSnackbar = open({
           status: true,
-          message: 'Thêm khách hàng thành công',
+          message: 'Thêm ảnh bìa thành công',
           type: 'success',
         });
         dispatch(actionSnackbar);
@@ -166,12 +166,12 @@ function Customer(props) {
 
         setTimeout(() => {
           handleResetFormAdd();
-          fetchCustomer();
+          fetchBanner();
         }, 1500);
       } catch (error) {
         const actionSnackbar = open({
           status: true,
-          message: 'Thêm khách hàng không thành công',
+          message: 'Thêm ảnh bìa không thành công',
           type: 'error',
         });
         dispatch(actionSnackbar);
@@ -179,10 +179,11 @@ function Customer(props) {
     }
   };
 
-  const fetchCustomer = async (filters) => {
+  const fetchBanner = async (filters) => {
     try {
-      const { data } = await customerApi.getAll(filters);
-      setCustomerList(data);
+      const { data } = await bannerApi.getAll(filters);
+
+      setBannerList(data);
     } catch (error) {
       console.log('Fail to fetch: ', error);
     }
@@ -191,23 +192,23 @@ function Customer(props) {
   return (
     <Container>
       <Typography variant="h6" sx={{ mb: 3 }}>
-        Danh sách khách hàng
+        Danh sách ảnh bìa
       </Typography>
-      <CustomerTable
-        customerList={customerList}
+      <BannerTable
+        bannerList={bannerList}
         onSubmit={handleSearchSubmit}
         onAddOpenClick={handleClickOpenAdd}
         onRemoveClick={handleRemoveClick}
         onToolbarRemoveClick={handleToolbarRemoveClick}
       />
-      <CustomerAdd
+      <BannerAdd
         onSubmit={handleAddSubmit}
         onClose={handleCloseAdd}
         open={openAdd}
-        customer={customerToAdd}
+        banner={bannerToAdd}
       />
     </Container>
   );
 }
 
-export default Customer;
+export default Banner;

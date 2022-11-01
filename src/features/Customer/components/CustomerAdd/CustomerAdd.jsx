@@ -1,6 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
-import { Autocomplete, Stack, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -11,6 +19,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -56,48 +65,47 @@ CustomizeDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-UserAdd.propTypes = {
-  user: PropTypes.object,
+CustomerAdd.propTypes = {
+  customer: PropTypes.object,
   open: PropTypes.bool,
   onSubmit: PropTypes.func,
   onClose: PropTypes.func,
-  roleList: PropTypes.array,
 };
 
-UserAdd.defaultValues = {
-  user: null,
+CustomerAdd.defaultValues = {
+  customer: null,
   open: false,
   onSubmit: null,
   onClose: null,
-  roleList: [],
 };
 
-function UserAdd({ onClose, onSubmit, open, user, roleList }) {
-  const isUpdate = Boolean(user) || false;
+function CustomerAdd({ onClose, onSubmit, open, customer }) {
+  const isUpdate = Boolean(customer) || false;
   const initialValues = {
-    userName: '',
-    fullName: '',
+    name: '',
+    birthday: moment(new Date('1970-01-01')).format('YYYY-MM-DD'),
+    address: '',
+    tel: '',
     email: '',
-    phoneNumber: '',
-    avatarImage: [],
     inputHidden: '',
-    roles: [],
   };
   const resetValues = {
-    userName: isUpdate ? user.userName : '',
-    fullName: isUpdate ? user.fullName : '',
-    email: isUpdate ? user.email : '',
-    phoneNumber: isUpdate ? user.phoneNumber : '',
-    avatarImage: [],
-    inputHidden: isUpdate ? user.avatarImage || '' : '',
-    roles: isUpdate ? roleList.filter((x) => user.userRoles.includes(x.id)) : [],
+    name: isUpdate ? customer.name : '',
+    birthday: isUpdate
+      ? moment(customer.birthday).format('YYYY-MM-DD')
+      : moment(new Date('1970-01-01')).format('YYYY-MM-DD'),
+    address: isUpdate ? customer.address : '',
+    tel: isUpdate ? customer.tel : '',
+    email: isUpdate ? customer.email : '',
+    inputHidden: isUpdate ? customer.imageUrl : '',
   };
 
   const schema = yup.object().shape({
-    userName: yup.string().required('Vui lòng nhập tên đăng nhập'),
-    fullName: yup.string().required('Vui lòng nhập họ tên'),
-    email: yup.string().required('Vui lòng nhập email'),
-    phoneNumber: yup.string(),
+    name: yup.string().required('Vui lòng nhập tên khách'),
+    birthday: yup.string().required('Vui lòng nhập ngày sinh'),
+    address: yup.string(),
+    tel: yup.string(),
+    email: yup.string().email('Vui lòng nhập đúng định dạng email'),
   });
 
   const { handleSubmit, control, reset, formState, resetField, setValue, register } = useForm({
@@ -143,7 +151,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
 
   useEffect(() => {
     handleFormReset(resetValues);
-  }, [user]);
+  }, [customer]);
 
   return (
     <CustomizeDialog
@@ -161,7 +169,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="userName"
+                  name="name"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -169,8 +177,8 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="userName"
-                      label="Tên đăng nhập *"
+                      id="name"
+                      label="Tên khách *"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -181,7 +189,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="fullName"
+                  name="birthday"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -189,8 +197,49 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="fullName"
-                      label="Họ tên *"
+                      type="date"
+                      id="birthday"
+                      label="Ngày sinh *"
+                      size="small"
+                      variant="standard"
+                      error={!!errors[name]}
+                      helperText={errors[name]?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
+                  name="address"
+                  control={control}
+                  render={({ field: { name, value, onChange } }) => (
+                    <TextField
+                      name={name}
+                      onChange={onChange}
+                      value={value}
+                      fullWidth
+                      id="address"
+                      label="Địa chỉ"
+                      size="small"
+                      variant="standard"
+                      error={!!errors[name]}
+                      helperText={errors[name]?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Controller
+                  name="tel"
+                  control={control}
+                  render={({ field: { name, value, onChange } }) => (
+                    <TextField
+                      name={name}
+                      onChange={onChange}
+                      value={value}
+                      fullWidth
+                      id="tel"
+                      label="Số điện thoại"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -210,7 +259,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                       value={value}
                       fullWidth
                       id="email"
-                      label="Email *"
+                      label="Email"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -220,60 +269,14 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({ field: { name, value, onChange } }) => (
-                    <TextField
-                      name={name}
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      id="phoneNumber"
-                      label="Điện thoại"
-                      size="small"
-                      variant="standard"
-                      error={!!errors.name}
-                      helperText={errors?.name?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="roles"
-                  control={control}
-                  render={({ field: { name, onChange, value } }) => (
-                    <Autocomplete
-                      name={name}
-                      value={value}
-                      onChange={(event, data) => {
-                        onChange(data);
-                      }}
-                      multiple
-                      size="small"
-                      id="roles"
-                      options={roleList}
-                      getOptionLabel={(option) => option.name}
-                      isOptionEqualToValue={(option, value) => option.id === value.id}
-                      filterSelectedOptions
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" label="Vai trò" />
-                      )}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
                 <Typography sx={{ mb: 2 }}> Hình ảnh</Typography>
                 <Stack direction="row" sx={{ flexWrap: 'wrap' }}>
                   <CustomizeFileUpload
-                    initImageUrl={getUrlImage(user?.avatarImage)}
+                    initImageUrl={getUrlImage(customer?.imageUrl)}
                     defaultImageUrl={STORAGE_IMAGE.AVATAR_THUMBNAI}
-                    title="Ảnh đại diện"
-                    {...register('avatarImage')}
+                    {...register('thumbnailImage')}
                     onClose={() => {
-                      handleFileUploadClose('avatarImage', 'inputHidden');
+                      handleFileUploadClose('thumbnailImage', 'inputHidden');
                     }}
                   />
 
@@ -308,4 +311,4 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
   );
 }
 
-export default UserAdd;
+export default CustomerAdd;
