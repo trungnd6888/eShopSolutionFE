@@ -27,7 +27,6 @@ function Login() {
       console.log('Login is success');
       navigate('/dashboard/dashboard');
     } catch (error) {
-      console.log('error day nay: ', error);
       let message;
       switch (error.message) {
         case 'Username is locked':
