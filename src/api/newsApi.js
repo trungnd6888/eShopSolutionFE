@@ -1,9 +1,9 @@
 import axiosClient from './axiosClient';
 import qs from 'qs';
 
-const productApi = {
+const newsApi = {
   getAll(params) {
-    const url = '/products';
+    const url = '/news';
     return axiosClient.get(url, {
       params,
       paramsSerializer: function (params) {
@@ -12,33 +12,33 @@ const productApi = {
     });
   },
   getById(id) {
-    const url = `/products/${id}`;
+    const url = `/news/${id}`;
     return axiosClient.get(url);
   },
   add(data) {
-    const url = '/products';
+    const url = '/news';
     return axiosClient.post(url, data);
   },
   addFormData(data) {
-    const url = '/products';
+    const url = '/news';
     return axiosClient.post(url, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
   remove(id) {
-    const url = `/products/${id}`;
+    const url = `/news/${id}`;
     return axiosClient.delete(url);
   },
   update(id, data) {
-    const url = `/products/${id}`;
+    const url = `/news/${id}`;
     return axiosClient.patch(url, data);
   },
   updateFormData(id, data) {
-    const url = `/products/${id}`;
+    const url = `/news/${id}`;
     return axiosClient.patch(url, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 };
 
-export default productApi;
+export default newsApi;
