@@ -1,14 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, Stack, TextField, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -19,12 +11,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import CustomizeFileUpload from '../../../../components/CustomizeFileUpload/CustomizeFileUpload';
+import TextEditor from '../../../../components/TextEditor/TextEditor';
 import { STORAGE_IMAGE } from '../../../../constants/common';
 
 const CustomizeDialog = styled(Dialog)(({ theme }) => ({
@@ -65,47 +57,44 @@ CustomizeDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-CustomerAdd.propTypes = {
-  customer: PropTypes.object,
+NewsAdd.propTypes = {
+  news: PropTypes.object,
   open: PropTypes.bool,
   onSubmit: PropTypes.func,
   onClose: PropTypes.func,
 };
 
-CustomerAdd.defaultValues = {
-  customer: null,
+NewsAdd.defaultValues = {
+  news: null,
   open: false,
   onSubmit: null,
   onClose: null,
 };
 
-function CustomerAdd({ onClose, onSubmit, open, customer }) {
-  const isUpdate = Boolean(customer) || false;
+function NewsAdd({ onClose, onSubmit, open, news }) {
+  const isUpdate = Boolean(news) || false;
   const initialValues = {
-    name: '',
-    birthday: moment(new Date('1970-01-01')).format('YYYY-MM-DD'),
-    address: '',
-    tel: '',
-    email: '',
+    title: '',
+    summary: '',
+    content: '',
+    isApproved: false,
+    thumbnailImage: [],
     inputHidden: '',
   };
   const resetValues = {
-    name: isUpdate ? customer.name : '',
-    birthday: isUpdate
-      ? moment(customer.birthday).format('YYYY-MM-DD')
-      : moment(new Date('1970-01-01')).format('YYYY-MM-DD'),
-    address: isUpdate ? customer.address : '',
-    tel: isUpdate ? customer.tel : '',
-    email: isUpdate ? customer.email : '',
-    inputHidden: isUpdate ? customer.imageUrl : '',
+    title: isUpdate ? news.title : '',
+    summary: isUpdate && !!news.summary ? news.summary : '',
+    content: isUpdate && !!news.content ? news.content : '',
+    isApproved: isUpdate ? news.isApproved : false,
+    thumbnailImage: [],
+    inputHidden: isUpdate ? news.imageUrl : '',
   };
 
   const schema = yup.object().shape({
-    name: yup.string().required('Vui lòng nhập tên khách'),
-    birthday: yup.string().required('Vui lòng nhập ngày sinh'),
-    address: yup.string(),
-    tel: yup.string(),
-    email: yup.string().email('Vui lòng nhập đúng định dạng email'),
+    title: yup.string().required('Vui lòng nhập tiêu đề'),
+    summary: yup.string(),
+    content: yup.string(),
+    isApproved: yup.bool(),
   });
 
   const { handleSubmit, control, reset, formState, resetField, setValue, register } = useForm({
@@ -151,7 +140,7 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
 
   useEffect(() => {
     handleFormReset(resetValues);
-  }, [customer]);
+  }, [news]);
 
   return (
     <CustomizeDialog
@@ -169,7 +158,7 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="name"
+                  name="title"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -177,8 +166,8 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="name"
-                      label="Tên khách *"
+                      id="title"
+                      label="Tiêu đề *"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -189,7 +178,7 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="birthday"
+                  name="summary"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -197,9 +186,8 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      type="date"
-                      id="birthday"
-                      label="Ngày sinh *"
+                      id="summary"
+                      label="Tóm tắt"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -208,9 +196,9 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
+              {/* <Grid item xs={12} sm={12} md={12}>
                 <Controller
-                  name="address"
+                  name="content"
                   control={control}
                   render={({ field: { name, value, onChange } }) => (
                     <TextField
@@ -218,8 +206,8 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                       onChange={onChange}
                       value={value}
                       fullWidth
-                      id="address"
-                      label="Địa chỉ"
+                      id="content"
+                      label="Nội dung"
                       size="small"
                       variant="standard"
                       error={!!errors[name]}
@@ -227,59 +215,34 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="tel"
-                  control={control}
-                  render={({ field: { name, value, onChange } }) => (
-                    <TextField
-                      name={name}
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      id="tel"
-                      label="Điện thoại"
-                      size="small"
-                      variant="standard"
-                      error={!!errors[name]}
-                      helperText={errors[name]?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field: { name, value, onChange } }) => (
-                    <TextField
-                      name={name}
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      id="email"
-                      label="Email"
-                      size="small"
-                      variant="standard"
-                      error={!!errors[name]}
-                      helperText={errors[name]?.message}
-                    />
-                  )}
-                />
+                <FormGroup sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name="isApproved"
+                        control={control}
+                        render={({ field: { name, value, onChange } }) => (
+                          <Checkbox name={name} onChange={onChange} checked={value} size="small" />
+                        )}
+                      />
+                    }
+                    label="Hiển thị"
+                  />
+                </FormGroup>
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Typography sx={{ mb: 2 }}> Hình ảnh</Typography>
                 <Stack direction="row" sx={{ flexWrap: 'wrap' }}>
                   <CustomizeFileUpload
-                    initImageUrl={getUrlImage(customer?.imageUrl)}
-                    defaultImageUrl={STORAGE_IMAGE.AVATAR_THUMBNAI}
+                    initImageUrl={getUrlImage(news?.imageUrl)}
+                    defaultImageUrl={STORAGE_IMAGE.PRODUCT_THUMBNAI}
                     {...register('thumbnailImage')}
                     onClose={() => {
                       handleFileUploadClose('thumbnailImage', 'inputHidden');
                     }}
                   />
-
                   <Controller
                     name="inputHidden"
                     control={control}
@@ -294,6 +257,16 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
                     )}
                   />
                 </Stack>
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Typography sx={{ mb: 2 }}> Nội dung</Typography>
+                <Controller
+                  name="content"
+                  control={control}
+                  render={({ field: { name, value, onChange } }) => (
+                    <TextEditor name={name} value={value} onChange={onChange} />
+                  )}
+                />
               </Grid>
             </Grid>
           </Container>
@@ -311,4 +284,4 @@ function CustomerAdd({ onClose, onSubmit, open, customer }) {
   );
 }
 
-export default CustomerAdd;
+export default NewsAdd;
