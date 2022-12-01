@@ -41,7 +41,7 @@ function Login() {
 
       const actionSnackbar = open({
         status: true,
-        message: [message],
+        message: message,
         type: 'error',
       });
       dispatch(actionSnackbar);

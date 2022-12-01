@@ -10,38 +10,38 @@ import { logout } from '../../features/Auth/authSlice';
 const drawerWidth = 240;
 
 function DashboardLayout(props) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
-    const handleLogout = () => {
-        const action = logout(user);
-        dispatch(action);
-        navigate('/login');
-    };
+  const handleLogout = () => {
+    const action = logout(user);
+    dispatch(action);
+    navigate('/login');
+  };
 
-    const RootStyle = styled(Box)({
-        display: 'flex',
-    });
+  const RootStyle = styled(Box)({
+    display: 'flex',
+  });
 
-    const MainStyle = styled(Box)({
-        overflowX: 'auto',
-        marginTop: 80,
-        width: {
-            xs: '100%',
-            lg: `calc(100% - ${drawerWidth}px)`
-        }
-    });
+  const MainStyle = styled(Box)({
+    overflowX: 'auto',
+    marginTop: 80,
+    width: {
+      xs: '100%',
+      lg: `calc(100% - ${drawerWidth}px)`,
+    },
+  });
 
-    return (
-        <RootStyle>
-            <Header drawerWidth={drawerWidth} onLogout={handleLogout} />
-            <SideBar drawerWidth={drawerWidth} />
-            <MainStyle component="main" sx={{ width: '100%' }}>
-                < Outlet />
-            </MainStyle>
-        </RootStyle >
-    );
+  return (
+    <RootStyle>
+      <Header drawerWidth={drawerWidth} onLogout={handleLogout} />
+      <SideBar drawerWidth={drawerWidth} />
+      <MainStyle component="main" sx={{ width: '100%' }}>
+        <Outlet />
+      </MainStyle>
+    </RootStyle>
+  );
 }
 
 export default DashboardLayout;
