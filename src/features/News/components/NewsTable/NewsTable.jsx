@@ -18,7 +18,6 @@ import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import newsApi from '../../../../api/newsApi';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-import { STORAGE_IMAGE } from '../../../../constants/common';
 import NewsTableHead from '../NewsTableHead/NewsTableHead';
 import NewsTableToolbar from '../NewsTableToolbar/NewsTableToolbar';
 
@@ -207,12 +206,18 @@ function NewsTable({ newsList, onSubmit, onAddOpenClick, onRemoveClick, onToolba
     setSelected([]);
   };
 
-  const setImageUrlRow = (row) => {
+  const getImageUrlRow = (row) => {
     const url = row.imageUrl;
     if (!url) return;
 
     const path = `https://localhost:7095${url}`;
     return path;
+  };
+
+  const getSliceContent = (content) => {
+    if (!content) return;
+
+    return content.length > 200 ? `${content.slice(0, 199)}...` : content;
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -277,11 +282,11 @@ function NewsTable({ newsList, onSubmit, onAddOpenClick, onRemoveClick, onToolba
                         <Avatar
                           variant="square"
                           sx={{ width: 50, height: 50, borderRadius: 1 }}
-                          src={setImageUrlRow(row)}
+                          src={getImageUrlRow(row)}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.content}
+                        {getSliceContent(row.content)}
                       </TableCell>
                       <TableCell alight="left">
                         {moment(row.createDate).format('DD/MM/YYYY')}

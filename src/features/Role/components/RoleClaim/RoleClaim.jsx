@@ -128,6 +128,12 @@ function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
       label: 'Ảnh bìa',
       groupId: 3,
     },
+    {
+      id: 10,
+      nameControl: 'profile',
+      label: 'Thông tin khách hàng',
+      groupId: 3,
+    },
   ];
 
   const groups = [
@@ -194,6 +200,7 @@ function RoleClaim({ onClose, onSubmit, open, roleClaimList }) {
   };
 
   const handleFormSubmit = async (values) => {
+    console.log('values: ', values);
     if (onSubmit)
       await onSubmit(values, () => {
         handleFormReset(initialValues);

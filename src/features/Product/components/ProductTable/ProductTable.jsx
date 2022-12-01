@@ -289,6 +289,10 @@ function ProductTable({
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const getDateFormat = (date) => {
+    return moment(date).format('DD/MM/YYYY');
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -349,9 +353,7 @@ function ProductTable({
                           src={setImageUrlRow(row)}
                         />
                       </TableCell>
-                      <TableCell align="left">
-                        {moment(row.createDate).format('DD/MM/YYYY')}
-                      </TableCell>
+                      <TableCell align="left">{getDateFormat(row.createDate)}</TableCell>
                       <TableCell align="left">{formatter.format(row.price)}</TableCell>
                       <TableCell align="left">{row.approvedName}</TableCell>
                       <TableCell align="left">{row.userName}</TableCell>

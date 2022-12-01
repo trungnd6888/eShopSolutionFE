@@ -70,7 +70,7 @@ function NewsTableToolbar({ numSelected, onSubmit, onAddOpenClick, onAccept }) {
       {numSelected > 0 ? (
         <>
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} sản phẩm
+            {numSelected} lựa chọn
           </Typography>
           <Tooltip title="Xóa">
             <IconButton onClick={handleRemove}>

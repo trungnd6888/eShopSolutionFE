@@ -1,6 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, styled, TextField, Typography } from '@mui/material';
-import { STORAGE_IMAGE } from '../../constants/common';
 import { PropTypes } from 'prop-types';
 import React, { useState, forwardRef } from 'react';
 
