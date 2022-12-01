@@ -28,6 +28,7 @@ function Role(props) {
     'permission',
     'user',
     'banner',
+    'profile',
   ];
 
   useEffect(() => {
@@ -55,7 +56,7 @@ function Role(props) {
 
       const actionSnackbar = open({
         status: true,
-        message: 'Xoá sản phẩm thành công',
+        message: 'Xoá quyền thành công',
         type: 'success',
       });
       dispatch(actionSnackbar);
@@ -76,7 +77,7 @@ function Role(props) {
 
       const actionSnackbar = open({
         status: true,
-        message: 'Xoá sản phẩm thành công',
+        message: 'Xoá quyền thành công',
         type: 'success',
       });
       dispatch(actionSnackbar);
@@ -114,7 +115,7 @@ function Role(props) {
 
         const actionSnackbar = open({
           status: true,
-          message: 'Cập nhật sản phẩm thành công',
+          message: 'Cập nhật quyền thành công',
           type: 'success',
         });
         dispatch(actionSnackbar);
@@ -130,7 +131,7 @@ function Role(props) {
       } catch (error) {
         const actionSnackbar = open({
           status: true,
-          message: 'Cập nhật sản phẩm không thành công',
+          message: 'Cập nhật quyền không thành công',
           type: 'error',
         });
         dispatch(actionSnackbar);
@@ -141,7 +142,7 @@ function Role(props) {
 
         const actionSnackbar = open({
           status: true,
-          message: 'Thêm sản phẩm thành công',
+          message: 'Thêm quyền thành công',
           type: 'success',
         });
         dispatch(actionSnackbar);
@@ -157,7 +158,7 @@ function Role(props) {
       } catch (error) {
         const actionSnackbar = open({
           status: true,
-          message: 'Mã sản phẩm đã được sử dụng',
+          message: 'Mã quyền đã được sử dụng',
           type: 'error',
         });
         dispatch(actionSnackbar);
@@ -177,7 +178,7 @@ function Role(props) {
     const updateValues = {
       ...values,
     };
-    console.log('updateValues: ', updateValues);
+
     const roleClaimNewList = [];
     rows.forEach((x) => {
       for (const prop in updateValues) {
@@ -214,7 +215,7 @@ function Role(props) {
         }
       }
     });
-    console.log('roleClaimNewList: ', roleClaimNewList);
+
     const isUpdate = Boolean(roleClaimList) || false;
 
     if (isUpdate) {
@@ -262,7 +263,7 @@ function Role(props) {
       const { data } = await roleApi.getAll(filters);
       setRoleList(data);
     } catch (error) {
-      console.log('Fail to fetch: ', error);
+      console.log('Fail to fetch role: ', error);
     }
   };
 
