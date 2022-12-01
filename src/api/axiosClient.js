@@ -3,7 +3,7 @@ import { STORAGE_CONST } from '../constants/common';
 
 const axiosClient = axios.create({
   //baseURL: import.meta.env.VITE_API_ENDPOINT,
-  baseURL: 'http://eshop6888.somee.com/api',
+  baseURL: 'https://eshop6888.somee.com/api',
   header: {
     'Content-Type': 'application/json',
   },
