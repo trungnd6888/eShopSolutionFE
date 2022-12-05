@@ -177,6 +177,7 @@ function Product(props) {
 
     const updateValues = {
       ...values,
+      userId,
       price: FormatStringToNumber(values.price),
       categories: values.categories.map((x) => x.id),
       distributors: values.distributors.map((x) => x.id),

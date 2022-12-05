@@ -83,7 +83,7 @@ function OrderTable({ orderList, onSubmit, onAddOpenClick, onRemoveClick, onTool
     tel,
     createDate,
     statusName,
-    customerId,
+    userName,
     totalAmount,
     id,
     orderDetails
@@ -96,7 +96,7 @@ function OrderTable({ orderList, onSubmit, onAddOpenClick, onRemoveClick, onTool
       tel,
       createDate,
       statusName,
-      customerId,
+      userName,
       totalAmount,
       id,
       orderDetails,
@@ -112,7 +112,7 @@ function OrderTable({ orderList, onSubmit, onAddOpenClick, onRemoveClick, onTool
       order.tel,
       order.createDate,
       order.statusName,
-      order.customerId,
+      order.userName,
       order.totalAmount,
       order.id,
       order.orderDetails

@@ -15,6 +15,10 @@ const newsApi = {
     const url = `/news/${id}`;
     return axiosClient.get(url);
   },
+  getNew() {
+    const url = `/news/new`;
+    return axiosClient.get(url);
+  },
   add(data) {
     const url = '/news';
     return axiosClient.post(url, data);

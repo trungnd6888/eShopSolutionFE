@@ -79,7 +79,7 @@ function OrderRow({ isItemSelected, labelId, row, onCheckBox, onControl }) {
         <TableCell align="left">{row.tel}</TableCell>
         <TableCell align="left">{getDateFormat(row.createDate)}</TableCell>
         <TableCell align="left">{row.statusName}</TableCell>
-        <TableCell align="left">{row.customerId}</TableCell>
+        <TableCell align="left">{row.userName}</TableCell>
         <TableCell align="left">{getMoneyFormat(row.totalAmount)}</TableCell>
         <TableCell>
           <IconButton
