@@ -26,7 +26,7 @@ function AppTimeline({ list }) {
     return (
         <Paper>
             <Timeline sx={{ mt: 0, mb: 0 }}>
-                {list.map((item, index) =>
+                {list?.map((item, index) =>
                     <CustomizeTimelineItem key={item.color + index} >
                         <TimelineSeparator>
                             <TimelineDot color={item.color} />

@@ -15,6 +15,10 @@ const customerApi = {
     const url = `/customers/${id}`;
     return axiosClient.get(url);
   },
+  getTotal() {
+    const url = `/customers/total`;
+    return axiosClient.get(url);
+  },
   add(data) {
     const url = '/customers';
     return axiosClient.post(url, data);

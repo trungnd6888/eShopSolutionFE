@@ -92,7 +92,7 @@ function Order(props) {
 
         const actionSnackbar = open({
           status: true,
-          message: 'Cập nhật sản phẩm thành công',
+          message: 'Cập nhật đơn hàng thành công',
           type: 'success',
         });
         dispatch(actionSnackbar);
