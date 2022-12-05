@@ -203,7 +203,7 @@ function UserTable({ userList, onSubmit, onAddOpenClick, onRemoveClick, onToolba
   };
 
   const setImageUrlRow = (path) => {
-    return path ? `https://localhost:7095${path}` : STORAGE_IMAGE.PRODUCT_THUMBNAI;
+    return path ? `${import.meta.env.VITE_BASE_URL}${path}` : STORAGE_IMAGE.PRODUCT_THUMBNAI;
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;

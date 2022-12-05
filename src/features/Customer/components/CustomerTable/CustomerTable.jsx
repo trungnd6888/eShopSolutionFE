@@ -215,7 +215,7 @@ function CustomerTable({
     const url = row.imageUrl;
     if (!url) return;
 
-    const path = `https://localhost:7095${url}`;
+    const path = `${import.meta.env.VITE_BASE_URL}${url}`;
     return path;
   };
 
