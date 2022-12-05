@@ -2,11 +2,11 @@ import axiosClient from './axiosClient';
 
 const orderDetailApi = {
   getTotal() {
-    const url = '/orderDetails/total';
+    const url = '/total/orderDetails';
     return axiosClient.get(url);
   },
   getTotalQuantity() {
-    const url = '/orderDetails/totalquantity';
+    const url = '/totalquantity/orderDetails';
     return axiosClient.get(url);
   },
 };

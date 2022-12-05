@@ -16,7 +16,7 @@ const customerApi = {
     return axiosClient.get(url);
   },
   getTotal() {
-    const url = `/customers/total`;
+    const url = `/total/customers`;
     return axiosClient.get(url);
   },
   add(data) {
