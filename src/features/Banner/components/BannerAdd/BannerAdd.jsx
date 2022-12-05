@@ -1,14 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, Stack, TextField, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -137,7 +129,7 @@ function BannerAdd({ onClose, onSubmit, open, banner }) {
   };
 
   const getUrlImage = (path) => {
-    return isUpdate && path ? `https://localhost:7095${path}` : '';
+    return isUpdate && path ? `${import.meta.env.VITE_BASE_URL}${path}` : '';
   };
 
   const handleFileUploadClose = (fileUpload, inputHidden) => {
