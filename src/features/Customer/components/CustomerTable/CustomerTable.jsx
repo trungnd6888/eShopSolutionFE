@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Chip, Menu, MenuItem } from '@mui/material';
+import { Avatar, Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -18,7 +18,6 @@ import { PropTypes } from 'prop-types';
 import React, { useState } from 'react';
 import customerApi from '../../../../api/customerApi';
 import QuestionDialog from '../../../../components/QuestionDialog/QuestionDialog';
-import { STORAGE_IMAGE } from '../../../../constants/common';
 import CustomerTableHead from '../CustomerTableHead/CustomerTableHead';
 import CustomerTableToolbar from '../CustomerTableToolbar/CustomerTableToolbar';
 

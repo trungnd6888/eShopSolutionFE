@@ -225,7 +225,7 @@ function ProductAdd({ onClose, onSubmit, open, categoryList, distributorList, pr
     if (!productImage) return '';
     const path = productImage.imageUrl;
 
-    return isUpdate && path ? `https://localhost:7095${path}` : '';
+    return isUpdate && path ? `${import.meta.env.VITE_BASE_URL}${path}` : '';
   };
 
   useEffect(() => {

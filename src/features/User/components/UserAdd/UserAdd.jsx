@@ -133,7 +133,7 @@ function UserAdd({ onClose, onSubmit, open, user, roleList }) {
   };
 
   const getUrlImage = (path) => {
-    return isUpdate && path ? `https://localhost:7095${path}` : '';
+    return isUpdate && path ? `${import.meta.env.VITE_BASE_URL}${path}` : '';
   };
 
   const handleFileUploadClose = (fileUpload, inputHidden) => {
