@@ -208,11 +208,11 @@ function BannerTable({
     setSelected([]);
   };
 
-  const setImageUrlRow = (row) => {
+  const getImageUrlRow = (row) => {
     const url = row.imageUrl;
     if (!url) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
 
-    const path = `https://localhost:7095${url}`;
+    const path = `${import.meta.env.VITE_BASE_URL}${url}`;
     return path;
   };
 
@@ -276,7 +276,7 @@ function BannerTable({
                         <Avatar
                           variant="square"
                           sx={{ width: 50, height: 50, borderRadius: 1 }}
-                          src={setImageUrlRow(row)}
+                          src={getImageUrlRow(row)}
                         />
                       </TableCell>
                       <TableCell align="left">

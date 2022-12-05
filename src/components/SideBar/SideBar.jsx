@@ -61,7 +61,7 @@ function SideBar({ drawerWidth }) {
           alt="profile-image"
           src={
             avatarImageUrl
-              ? `https://localhost:7095${avatarImageUrl}`
+              ? `${import.meta.env.VITE_BASE_URL}${avatarImageUrl}`
               : STORAGE_IMAGE.AVATAR_THUMBNAI
           }
           sx={{

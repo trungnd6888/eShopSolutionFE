@@ -280,7 +280,7 @@ function ProductTable({
     const url = image.imageUrl;
     if (!url) return STORAGE_IMAGE.PRODUCT_THUMBNAI;
 
-    const path = `https://localhost:7095${url}`;
+    const path = `${import.meta.env.VITE_BASE_URL}${url}`;
     return path;
   };
 
