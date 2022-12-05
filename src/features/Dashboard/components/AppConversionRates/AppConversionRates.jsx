@@ -11,41 +11,46 @@ import BaseOptionChart from '../BaseOptionChart/BaseOptionChart';
 // ----------------------------------------------------------------------
 
 AppConversionRates.propTypes = {
-    title: PropTypes.string,
-    subheader: PropTypes.string,
-    chartData: PropTypes.array.isRequired,
+  title: PropTypes.string,
+  subheader: PropTypes.string,
+  chartData: PropTypes.array.isRequired,
 };
 
 export default function AppConversionRates({ title, subheader, chartData, ...other }) {
-    const chartLabels = chartData.map((i) => i.label);
+  const chartLabels = chartData?.map((i) => i.label);
 
-    const chartSeries = chartData.map((i) => i.value);
+  const chartSeries = chartData?.map((i) => i.value);
 
-    const chartOptions = merge(BaseOptionChart(), {
-        tooltip: {
-            marker: { show: false },
-            y: {
-                formatter: (seriesName) => fNumber(seriesName),
-                title: {
-                    formatter: () => '',
-                },
-            },
+  const chartOptions = merge(BaseOptionChart(), {
+    tooltip: {
+      marker: { show: false },
+      y: {
+        formatter: (seriesName) => fNumber(seriesName),
+        title: {
+          formatter: () => '',
         },
-        plotOptions: {
-            bar: { horizontal: true, barHeight: '28%', borderRadius: 2 },
-        },
-        xaxis: {
-            categories: chartLabels,
-        },
-    });
+      },
+    },
+    plotOptions: {
+      bar: { horizontal: true, barHeight: '28%', borderRadius: 2 },
+    },
+    xaxis: {
+      categories: chartLabels,
+    },
+  });
 
-    return (
-        <Card {...other}>
-            <CardHeader title={title} subheader={subheader} />
+  return (
+    <Card {...other}>
+      <CardHeader title={title} subheader={subheader} />
 
-            <Box sx={{ mx: 3 }} dir="ltr">
-                <ReactApexChart type="bar" series={[{ data: chartSeries }]} options={chartOptions} height={364} />
-            </Box>
-        </Card>
-    );
+      <Box sx={{ mx: 3 }} dir="ltr">
+        <ReactApexChart
+          type="bar"
+          series={[{ data: chartSeries }]}
+          options={chartOptions}
+          height={364}
+        />
+      </Box>
+    </Card>
+  );
 }

@@ -62,10 +62,10 @@ const headCells = [
     label: 'Trạng thái',
   },
   {
-    id: 'customerId',
+    id: 'userName',
     numeric: false,
     disablePadding: false,
-    label: 'Mã khách',
+    label: 'Tài khoản KH',
   },
   {
     id: 'totalAmount',
