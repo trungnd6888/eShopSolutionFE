@@ -10,7 +10,7 @@ const historyApi = {
     return axiosClient.get(url);
   },
   getNew() {
-    const url = `/new/histories`;
+    const url = `/histories/new`;
     return axiosClient.get(url);
   },
   remove(id) {
