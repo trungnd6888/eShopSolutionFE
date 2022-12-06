@@ -10,7 +10,7 @@ const orderApi = {
     return axiosClient.get(url);
   },
   getTotal() {
-    const url = `/total/orders`;
+    const url = '/orders/total';
     return axiosClient.get(url);
   },
   add(data) {
